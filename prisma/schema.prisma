@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String             @id @default(cuid())
+    clerkUserId    String
+    firstname String
+    lastname  String
+    email     String
+    contactNumber String?
+    profileImage   String?
+    orders    Order[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([email])
+}
+
+model Product {
+    id        Int      @id @default(autoincrement())
+    name      String
+    brand     String?
+    size      Size
+    color     String?
+    category  ProductCategory
+    stocks    String
+    price     Int
+    orders    Order[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([name])
+}
+
+model Order {
+    id         Int       @id @default(autoincrement())
+    user       User      @relation(fields: [userId], references: [id])
+    userId     String
+    product    Product   @relation(fields: [productId], references: [id])
+    productId  Int
+    quantity   Int
+    status     Status
+    deliveryDate  DateTime  @default(now())
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+
+
+   
+
+    @@index([userId,productId,id])
+}
+
+
+
+model Offers {
+    id        Int      @id @default(autoincrement())
+    name       String
+    price       String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([name])
+
+}
+
+
+enum Status {
+    CARTED
+    PENDING
+    ORDERDED
+    DELIVERY
+    DONE
+}
+
+
+enum Size {
+    DOUBLE_EXTRA_SMALL
+    EXTRA_SMALL
+    SMALL
+    MEDIUM
+    LARGE
+    EXTRALARGE
+    DOUBLELARGE
+    TRIPELARGE
+}
+
+enum ProductCategory {
+    JERSEY
+    V_NECK
+    POLO
+    TANK_TOP
+    ROUND_NECK
+    CREW_NECK
+    LONG_SLEEVE
+    RAGLAN
+    HENLEY
+    SLIM_FIT
+    OVERSIZED
+    BASKETBALL_SHORTS
+    RUNNING_SHORTS
+    CARGO_SHORTS
+    DENIM_SHORTS
+    BOARD_SHORTS
+    GYM_SHORTS
+    CHINO_SHORTS
+    SWEAT_SHORTS
+    SWIM_TRUNKS
+    SKATE_SHORTS
+}
