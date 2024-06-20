@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
+import type { WebhookEvent } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 
 export async function POST(req: Request) {
@@ -27,9 +27,9 @@ export async function POST(req: Request) {
   }
 
   // Get the body
-  const payload = await req.json();
-  const body = JSON.stringify(payload);
-  const contact = JSON.parse(body);
+  const payload = (await req.json()) as any;
+  const body = JSON.stringify(payload) as any;
+  const contact = JSON.parse(body) as any;
 
   // Create a new Svix instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
@@ -58,12 +58,12 @@ export async function POST(req: Request) {
   await db.user.create({
     data: {
       id: id,
-      clerkUserId: id as string,
-      firstname: payload.data.first_name,
-      lastname: payload.data.last_name,
-      contactNumber: contact.data.phone_numbers[0].phone_number,
+      clerkUserId: id!,
+      firstname: payload.data.first_name as string,
+      lastname: payload.data.last_name as string,
+      contactNumber: contact.data.phone_numbers[0].phone_number as string,
       email: payload.data.email_addresses[0]?.email_address as string,
-      profileImage: payload.data.profile_image_url,
+      profileImage: payload.data.profile_image_url as string,
     },
   });
   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
