@@ -29,6 +29,7 @@ model User {
 model Product {
     id        Int      @id @default(autoincrement())
     name      String
+    image     String?
     brand     String?
     size      Size
     color     String?
@@ -50,7 +51,7 @@ model Order {
     product    Product   @relation(fields: [productId], references: [id])
     productId  Int
     quantity   Int
-    status     Status
+    status     Status   @default(CARTED)
     deliveryDate  DateTime  @default(now())
     createdAt  DateTime  @default(now())
     updatedAt  DateTime  @updatedAt
