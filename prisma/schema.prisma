@@ -11,14 +11,15 @@ datasource db {
 }
 
 model User {
-    id        String             @id @default(cuid())
-    clerkUserId    String
-    firstname String
-    lastname  String
-    email     String             @unique
-    contactNumber String?
-    profileImage   String?
-    orders    Order[]
+    id                   String             @id @default(cuid())
+    clerkUserId          String
+    firstname            String
+    lastname             String
+    email                String             @unique
+    contactNumber        String?
+    profileImage         String?
+    orders                               Order[]
+    userType             String?      @default("CUSTOMER")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
