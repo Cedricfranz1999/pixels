@@ -1,15 +1,12 @@
-"use client";
+import type { Dispatch, SetStateAction } from "react";
 
-import { Dispatch, SetStateAction } from "react";
 import { UploadDropzone } from "~/utils/uploadthing";
 
-export default function UploadFile({
-  setImage,
-  setIsEditing,
-}: {
+type UploadType = {
   setImage: Dispatch<SetStateAction<string | null>>;
   setIsEditing: Dispatch<SetStateAction<boolean>>;
-}) {
+};
+const UploadFile = ({ setIsEditing, setImage }: UploadType) => {
   const handleSetImage = (url: string) => {
     setImage(url);
     setIsEditing(false);
@@ -27,4 +24,6 @@ export default function UploadFile({
       }}
     />
   );
-}
+};
+
+export default UploadFile;

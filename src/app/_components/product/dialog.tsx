@@ -3,7 +3,6 @@ import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import UploadFile from "~/app/example-uploader/page";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -30,10 +29,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { useToast } from "~/components/ui/use-toast";
-// import { toast } from "~/components/ui/use-toast";
+import { toast } from "~/components/ui/use-toast";
 import { api } from "~/trpc/react";
 import { type Product } from "~/types/product";
+import UploadFile from "../uploader/upload";
 
 type ProductProps = {
   open: boolean;
@@ -91,7 +90,6 @@ const formSchema = z.object({
 const ProductForm = ({ open, setOpen, product, refetch }: ProductProps) => {
   const [productImage, setProductImage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema),

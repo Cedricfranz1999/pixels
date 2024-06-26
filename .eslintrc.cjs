@@ -21,6 +21,7 @@ const config = {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/non-nullable-type-assertion-style": "off",
 
     "@typescript-eslint/consistent-type-imports": [
       "warn",
