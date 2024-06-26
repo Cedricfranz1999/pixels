@@ -1,18 +1,8 @@
 import "~/styles/globals.css";
 
-import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import { extractRouterConfig } from "uploadthing/server";
-import { ourFileRouter } from "./api/uploadthing/core";
-import { GeistSans } from "geist/font/sans";
-
 import { TRPCReactProvider } from "~/trpc/react";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "~/components/ui/toaster";
 
 export const metadata = {
   title: "Create T3 App",
@@ -28,7 +18,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="">{children}</body>
+        <body>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <Toaster />
+        </body>
       </html>
     </ClerkProvider>
   );

@@ -1,11 +1,11 @@
-import Link from "next/link";
-import UploadFile from "./example-uploader/page";
-// hasFakeCaretimport { api } from "~/trpc/server";
-
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 export default async function Home() {
-  return (
-    <div>
-      <UploadFile />
-    </div>
-  );
+  const user = await currentUser();
+
+  if (user?.firstName === "admin" && user.lastName === "admin") {
+    redirect("/admin/dashboard");
+  }
+
+  return redirect("client");
 }
