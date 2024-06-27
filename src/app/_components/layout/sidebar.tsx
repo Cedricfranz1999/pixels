@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { BarChart2Icon, FolderClosedIcon, Home } from "lucide-react";
+import { BarChart2Icon, FolderClosedIcon, Handshake, Home } from "lucide-react";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
 import { usePathname } from "next/navigation";
@@ -15,6 +15,11 @@ const links = [
     icon: BarChart2Icon,
     title: "Products",
     to: "/admin/products",
+  },
+  {
+    icon: Handshake,
+    title: "Offers",
+    to: "/admin/offers",
   },
   {
     icon: FolderClosedIcon,
