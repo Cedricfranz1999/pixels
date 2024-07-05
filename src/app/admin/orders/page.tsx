@@ -18,22 +18,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "~/trpc/react";
 import { toast } from "~/components/ui/use-toast";
 import dayjs from "dayjs";
 import { Button } from "~/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
-import { type DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
-
-type Checked = DropdownMenuCheckboxItemProps["checked"];
 
 const Checkouts = () => {
   const [searchKey, setSearchKey] = useState("");
-  const [isPending, setIsPending] = useState<Checked>(false);
-  const [isApproved, setIsApproved] = useState<Checked>(false);
-  const [isOnDelivery, setIsOnDelivery] = useState<Checked>(false);
-  const [isDone, setIsDone] = useState<Checked>(false);
 
   const { data, isLoading, refetch } = api.orders.getAllOrders.useQuery({
     search: searchKey,
@@ -54,17 +47,6 @@ const Checkouts = () => {
     setSearchKey(value);
     await refetch();
   };
-
-  useEffect(() => {
-    if (data) {
-      const statuses = data.map((order) => order.status);
-
-      setIsPending(statuses.includes("PENDING"));
-      setIsApproved(statuses.includes("APPROVED"));
-      setIsOnDelivery(statuses.includes("DELIVERY"));
-      setIsDone(statuses.includes("DONE"));
-    }
-  }, [data]);
 
   const onStatusChange = async (value: string, id: number) => {
     await changeStatus.mutateAsync({
@@ -149,7 +131,7 @@ const Checkouts = () => {
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuCheckboxItem
-                              checked={isPending}
+                              checked={checkout.status === "PENDING"}
                               onClick={() =>
                                 onStatusChange("PENDING", checkout.id)
                               }
@@ -157,7 +139,7 @@ const Checkouts = () => {
                               Pending
                             </DropdownMenuCheckboxItem>
                             <DropdownMenuCheckboxItem
-                              checked={isApproved}
+                              checked={checkout.status === "APPROVED"}
                               onClick={() =>
                                 onStatusChange("APPROVED", checkout.id)
                               }
@@ -165,7 +147,7 @@ const Checkouts = () => {
                               Approve
                             </DropdownMenuCheckboxItem>
                             <DropdownMenuCheckboxItem
-                              checked={isOnDelivery}
+                              checked={checkout.status === "DELIVERY"}
                               onClick={() =>
                                 onStatusChange("DELIVERY", checkout.id)
                               }
@@ -173,7 +155,7 @@ const Checkouts = () => {
                               On Delivery
                             </DropdownMenuCheckboxItem>
                             <DropdownMenuCheckboxItem
-                              checked={isDone}
+                              checked={checkout.status === "DONE"}
                               onClick={() =>
                                 onStatusChange("DONE", checkout.id)
                               }
