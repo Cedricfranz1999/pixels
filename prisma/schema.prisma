@@ -17,9 +17,12 @@ model User {
     lastname             String
     email                String             @unique
     contactNumber        String?
+    address              String?
     profileImage         String?
-    orders                               Order[]
     userType             String?      @default("CUSTOMER")
+    
+    orders               Order[]
+    checkout             Checkout[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -36,7 +39,7 @@ model Product {
     color     String?
     category  ProductCategory
     stocks    String
-    price     Int
+    price     Float
     orders    Order[]
 
     createdAt DateTime @default(now())
@@ -45,23 +48,36 @@ model Product {
     @@index([name])
 }
 
+// this is for adding in cart
 model Order {
     id         Int       @id @default(autoincrement())
-    user       User      @relation(fields: [userId], references: [id])
-    userId     String
-    product    Product   @relation(fields: [productId], references: [id])
-    productId  Int
     quantity   Int
-    status     Status   @default(CARTED)
-    proofOfPayment String?
-    deliveryDate  DateTime  @default(now())
+    status     CartStatus   @default(CARTED)
+    productId  Int
+    userId     String
+    checkoutId  Int?
+
+    product    Product   @relation(fields: [productId], references: [id])
+    user       User      @relation(fields: [userId], references: [id])
+    checkout   Checkout?  @relation(fields: [checkoutId], references: [id])
     createdAt  DateTime  @default(now())
     updatedAt  DateTime  @updatedAt
 
-
-   
-
     @@index([userId,productId,id])
+}
+
+// this is for ordered products
+model Checkout {
+    id      Int     @id @default(autoincrement())
+    userId  String
+    proofOfPayment  String?
+    deliveryDate  DateTime  @default(now())
+    status  CheckoutStaus  @default(PENDING)
+
+    order   Order[]
+    user    User    @relation(fields: [userId], references: [id])
+
+    @@index([userId,id])
 }
 
 
@@ -80,10 +96,14 @@ model Offers {
 }
 
 
-enum Status {
+enum CartStatus {
     CARTED
+    ORDERED
+}
+
+enum CheckoutStaus {
     PENDING
-    ORDERDED
+    APPROVED
     DELIVERY
     DONE
 }
