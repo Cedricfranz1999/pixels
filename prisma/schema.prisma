@@ -95,6 +95,14 @@ model Offers {
 
 }
 
+model WalkIn {
+    id          Int      @id @default(autoincrement())
+    quantity    Int
+    image       String?
+    description String
+    customer    String
+    price       Float
+}
 
 enum CartStatus {
     CARTED
