@@ -5,7 +5,5 @@ export default async function Home() {
 
   if (user?.firstName === "admin" && user.lastName === "admin") {
     redirect("/admin/dashboard");
-  }
-
-  return redirect("client");
+  } else redirect("client");
 }

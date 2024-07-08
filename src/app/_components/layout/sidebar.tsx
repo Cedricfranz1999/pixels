@@ -7,6 +7,7 @@ import {
   Handshake,
   Home,
   Notebook,
+  Shirt,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
@@ -31,6 +32,11 @@ const links = [
     icon: Notebook,
     title: "Orders",
     to: "/admin/orders",
+  },
+  {
+    icon: Shirt,
+    title: "Walk Ins",
+    to: "/admin/walk-in",
   },
   {
     icon: FolderClosedIcon,
