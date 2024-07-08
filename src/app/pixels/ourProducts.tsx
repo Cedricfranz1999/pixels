@@ -6,9 +6,9 @@ const OurProducts = () => {
   const products = new Array(8).fill(null);
 
   return (
-    <div className=" mt-20 flex flex-col items-center justify-center">
+    <div className="    flex flex-col items-center justify-center bg-blue-200 py-10">
       <Label
-        className="      mb-14 font-medium  tracking-wide text-[#224F34] "
+        className="      mb-14    px-4 font-medium  tracking-wide text-blue-500 underline "
         style={{ fontSize: "50px" }}
       >
         Our Products
@@ -25,7 +25,7 @@ const OurProducts = () => {
           <div className="">
             {" "}
             <div className=" flex flex-col items-center gap-5  ">
-              <img src="/ourProducts1.png" width={300} />
+              <img src="/tshit1.png" className=" rounded-lg" width={300} />
               <div className=" flex flex-col gap-3">
                 <Label className=" semi-bold  text-lg tracking-widest">
                   {" "}
@@ -33,9 +33,7 @@ const OurProducts = () => {
                 </Label>
                 <div className=" flex items-center justify-between   gap-5  px-16    font-medium">
                   <Label> ₱38.99 </Label>
-                  <Label> | </Label>
-
-                  <Star className=" m-0 bg-yellow-200" size={15} />
+                  <Label> | 300 sold </Label>
                 </div>
               </div>
             </div>
