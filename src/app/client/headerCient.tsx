@@ -3,13 +3,9 @@
 import React from "react";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
-import {
-  ShoppingCart,
-  ListOrdered,
-  Bell,
-  ShoppingCartIcon,
-} from "lucide-react";
+import { ShoppingCart, ListOrdered, Bell, Mail } from "lucide-react";
 import { SignedIn, useUser, UserButton } from "@clerk/nextjs";
+import EmailProvider from "../_components/email/EmailProvider";
 const HeaderClient = () => {
   const { user } = useUser();
 
@@ -47,6 +43,7 @@ const HeaderClient = () => {
                 5
               </Label>
             </div>{" "}
+            <EmailProvider />
             <SignedIn>
               <div>
                 <div className="flex w-full flex-shrink-0 items-center justify-between gap-2 p-2">

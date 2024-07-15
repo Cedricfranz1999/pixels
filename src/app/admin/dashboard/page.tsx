@@ -1,5 +1,11 @@
+import EmailProvider from "~/app/_components/email/EmailProvider";
+
 const Dashboard = () => {
-  return <div>here</div>;
+  return (
+    <div>
+      <EmailProvider />
+    </div>
+  );
 };
 
 export default Dashboard;
