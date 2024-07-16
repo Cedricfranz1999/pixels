@@ -53,9 +53,10 @@ model Order {
     id         Int       @id @default(autoincrement())
     quantity   Int
     status     CartStatus   @default(CARTED)
+    totalPrice Float
     productId  Int
     userId     String
-    checkoutId  Int?
+    checkoutId Int?
 
     product    Product   @relation(fields: [productId], references: [id])
     user       User      @relation(fields: [userId], references: [id])
@@ -68,11 +69,12 @@ model Order {
 
 // this is for ordered products
 model Checkout {
-    id      Int     @id @default(autoincrement())
-    userId  String
+    id              Int         @id @default(autoincrement())
+    userId          String
     proofOfPayment  String?
-    deliveryDate  DateTime  @default(now())
-    status  CheckoutStaus  @default(PENDING)
+    deliveryDate    DateTime    @default(now())
+    totalPrice      Float
+    status  CheckoutStaus       @default(PENDING)
 
     order   Order[]
     user    User    @relation(fields: [userId], references: [id])

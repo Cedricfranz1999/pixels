@@ -64,9 +64,9 @@ const Offers = () => {
       />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Products</h1>
+          <h1 className="text-2xl font-semibold">Offers</h1>
           <p className="text-sm leading-7 text-muted-foreground">
-            List of all products.
+            List of all offers.
           </p>
         </div>
       </div>

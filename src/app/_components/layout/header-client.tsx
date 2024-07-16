@@ -1,13 +1,28 @@
 "use client";
 
 import React from "react";
-import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
-import { ShoppingCart, ListOrdered, Bell, Mail } from "lucide-react";
+import { ShoppingCart, ListOrdered, Bell } from "lucide-react";
 import { SignedIn, useUser, UserButton } from "@clerk/nextjs";
-import EmailProvider from "../_components/email/EmailProvider";
-const HeaderClient = () => {
+import { useRouter } from "next/navigation";
+import EmailProvider from "../email/EmailProvider";
+
+type HeaderProps = {
+  cartItemsLength?: number;
+  orderedItemsLength?: number;
+};
+
+const HeaderClient = ({ cartItemsLength, orderedItemsLength }: HeaderProps) => {
   const { user } = useUser();
+  const router = useRouter();
+
+  const handleRouteToCart = () => {
+    router.push("/client/cart");
+  };
+
+  const handleRouteToCheckouts = () => {
+    router.push("/client/order");
+  };
 
   return (
     <div className=" mb-4">
@@ -22,18 +37,24 @@ const HeaderClient = () => {
 
         <div className=" flex items-center justify-center gap-8  ">
           <div className=" flex items-center justify-center gap-6  text-white">
-            <div className=" flex cursor-pointer items-center justify-center  gap-1 ">
+            <div
+              className=" flex cursor-pointer items-center justify-center  gap-1 "
+              onClick={handleRouteToCheckouts}
+            >
               <ListOrdered />
               <Label className=" cursor-pointer font-bold">Order</Label>
               <Label className="   text-white-300  cursor-pointer bg-red-400  px-2 py-1">
-                5
+                {orderedItemsLength}
               </Label>
             </div>{" "}
-            <div className=" flex cursor-pointer items-center justify-center gap-1 ">
+            <div
+              className=" flex cursor-pointer items-center justify-center gap-1 "
+              onClick={handleRouteToCart}
+            >
               <ShoppingCart />
               <Label className=" cursor-pointer font-bold ">Cart</Label>{" "}
               <Label className="   text-white-300  cursor-pointer bg-red-400  px-2 py-1">
-                4
+                {cartItemsLength}
               </Label>
             </div>{" "}
             <div className=" flex cursor-pointer items-center justify-center gap-1 ">
