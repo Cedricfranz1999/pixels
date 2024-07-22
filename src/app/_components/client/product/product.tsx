@@ -78,8 +78,8 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
   };
 
   return (
-    <div className="flex h-screen w-full gap-3    px-3 ">
-      <Card className="   w-1/6   bg-blue-50 px-2">
+    <div className="flex  w-full gap-3    px-3 ">
+      <Card className="    max-h-[1000px]  min-h-[1000px]  overflow-scroll  bg-blue-50 px-2 ">
         <Input
           placeholder="Search Products"
           className=" mb-10 mt-4 border  border-solid border-orange-500"
@@ -88,7 +88,11 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
           type="text"
         />
 
-        <RadioGroup defaultValue="ALL" onValueChange={onCategoryFilter}>
+        <RadioGroup
+          className=""
+          defaultValue="ALL"
+          onValueChange={onCategoryFilter}
+        >
           {CATEGORYIES.map((data, index) => {
             return (
               <div
@@ -96,7 +100,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
                 key={index}
               >
                 <div className=" flex items-center justify-center gap-2">
-                  <RadioGroupItem value={data.value} />
+                  <RadioGroupItem value={data.value} className="" />
                   <Label htmlFor={data.value}>{data.label}</Label>
                 </div>
               </div>
@@ -104,7 +108,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
           })}
         </RadioGroup>
       </Card>
-      <Card className="   w-full bg-blue-50   py-20">
+      <Card className="   min-h-[1000px]w-full  max-h-[1000px]  overflow-scroll bg-blue-50   py-20">
         <div className="grid grid-cols-4 gap-10">
           {data?.map((product: Product, index) => {
             const totalOrders = product.orders

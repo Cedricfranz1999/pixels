@@ -23,6 +23,10 @@ model User {
     
     orders               Order[]
     checkout             Checkout[]
+    design             Design[]
+    messagesSent     Message[] @relation("Sender")
+    messagesReceived Message[] @relation("Recipient")
+
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -106,6 +110,18 @@ model WalkIn {
     price       Float
 }
 
+
+model Design {
+
+    id          Int      @id @default(autoincrement())
+    description String?
+    image      String
+    userId     String
+    user       User      @relation(fields: [userId], references: [id])
+
+
+}
+
 enum CartStatus {
     CARTED
     ORDERED
@@ -129,6 +145,17 @@ enum Size {
     DOUBLELARGE
     TRIPELARGE
 }
+model Message {
+  id          Int      @id @default(autoincrement())
+  content     String
+  createdAt   DateTime @default(now())
+  senderId    String?
+  recipientId String?
+
+  sender      User? @relation("Sender", fields: [senderId], references: [id])
+  recipient   User? @relation("Recipient", fields: [recipientId], references: [id])
+}
+
 
 enum ProductCategory {
     JERSEY

@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className=" bg-blue-200 ">
+        <body>
           <TRPCReactProvider>{children}</TRPCReactProvider>
           <Toaster />
         </body>

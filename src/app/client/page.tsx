@@ -10,10 +10,6 @@ const Client = () => {
     api.client_carts.getAllCartedItems.useQuery();
   return (
     <div>
-      <HeaderClient
-        cartItemsLength={cartedItems?.length}
-        orderedItemsLength={checkoutItems?.length}
-      />
       <Product
         refetchCartItems={refetchCart}
         refetchOrderedItems={refetchCheckout}

@@ -32,10 +32,6 @@ const Carts = () => {
 
   return (
     <div>
-      <HeaderClient
-        cartItemsLength={data?.length}
-        orderedItemsLength={undefined}
-      />
       <div className="m-5">
         <div className="flex justify-between">
           <div className="flex flex-col gap-2">

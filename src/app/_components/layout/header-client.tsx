@@ -6,13 +6,18 @@ import { ShoppingCart, ListOrdered, Bell } from "lucide-react";
 import { SignedIn, useUser, UserButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import EmailProvider from "../email/EmailProvider";
+import { api } from "~/trpc/react";
 
 type HeaderProps = {
   cartItemsLength?: number;
   orderedItemsLength?: number;
 };
 
-const HeaderClient = ({ cartItemsLength, orderedItemsLength }: HeaderProps) => {
+const HeaderClient = () => {
+  const { data: checkoutItems, refetch: refetchCheckout } =
+    api.client_checkouts.getAllCheckoutItems.useQuery();
+  const { data: cartedItems, refetch: refetchCart } =
+    api.client_carts.getAllCartedItems.useQuery();
   const { user } = useUser();
   const router = useRouter();
 
@@ -25,15 +30,10 @@ const HeaderClient = ({ cartItemsLength, orderedItemsLength }: HeaderProps) => {
   };
 
   return (
-    <div className=" mb-4">
+    <div className=" mb-4 w-full">
       {/* header */}
-      <div className="     flex h-16  items-center   justify-between  bg-blue-500   px-5">
-        <div className=" flex items-center justify-start gap-1">
-          <img src="/logo.png " width={100} height={100} />
-          <Label className=" text-xl font-bold text-orange-400 ">
-            City Print Enterprises
-          </Label>
-        </div>
+      <div className="     flex  h-[60px]  items-center   justify-between  bg-orange-500   px-5">
+        <div className=" flex items-center justify-start gap-1"></div>
 
         <div className=" flex items-center justify-center gap-8  ">
           <div className=" flex items-center justify-center gap-6  text-white">
@@ -44,7 +44,7 @@ const HeaderClient = ({ cartItemsLength, orderedItemsLength }: HeaderProps) => {
               <ListOrdered />
               <Label className=" cursor-pointer font-bold">Order</Label>
               <Label className="   text-white-300  cursor-pointer bg-red-400  px-2 py-1">
-                {orderedItemsLength}
+                {checkoutItems?.length}
               </Label>
             </div>{" "}
             <div
@@ -54,7 +54,7 @@ const HeaderClient = ({ cartItemsLength, orderedItemsLength }: HeaderProps) => {
               <ShoppingCart />
               <Label className=" cursor-pointer font-bold ">Cart</Label>{" "}
               <Label className="   text-white-300  cursor-pointer bg-red-400  px-2 py-1">
-                {cartItemsLength}
+                {cartedItems?.length}
               </Label>
             </div>{" "}
             <div className=" flex cursor-pointer items-center justify-center gap-1 ">

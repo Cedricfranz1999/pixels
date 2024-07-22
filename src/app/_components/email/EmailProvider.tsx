@@ -50,7 +50,7 @@ const EmailProvider = () => {
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-[400px]">
-        <Card className="bg-white shadow-sm drop-shadow-md">
+        <Card className="bg shadow-sm drop-shadow-md">
           <form
             ref={form}
             onSubmit={sendEmail}
@@ -77,33 +77,33 @@ const EmailProvider = () => {
             )}
             <Label className="text-sm font-bold text-blue-500">Location</Label>
             <input
-              className="h-20 rounded-md border border-solid border-blue-300"
+              className="h-8 rounded-md    border border-blue-300"
               type="text"
               name="location"
             />
 
             <Label className="text-sm font-bold text-blue-500">Fullname</Label>
             <input
-              className="h-20 rounded-md border border-solid border-blue-300"
+              className="h-8 rounded-md border border-solid border-blue-300"
               name="user_fullname"
             />
             <Label className="text-sm font-bold text-blue-500">
               Contact Number
             </Label>
             <input
-              className="h-20 rounded-md border border-solid border-blue-300"
+              className="h-8 rounded-md border border-solid border-blue-300"
               name="user_contact"
             />
             <Label className="text-sm font-bold text-blue-500">
               Email Address
             </Label>
             <input
-              className="h-20 rounded-md border border-solid border-blue-300"
+              className="h-8 rounded-md border border-solid border-blue-300"
               name="user_email"
             />
             <Label className="text-sm font-bold text-blue-500">Message</Label>
             <textarea
-              className="h-56 rounded-md border border-solid border-blue-300"
+              className=" h-20 rounded-md border border-solid border-blue-300"
               name="message"
             />
             <input

@@ -45,7 +45,7 @@ const links = [
   },
 ];
 
-const Sidebar = () => {
+const SidebarClient = () => {
   const pathname = usePathname();
   return (
     <div className="top-0 hidden h-full border-r bg-white lg:fixed lg:block lg:w-[280px]">
@@ -81,4 +81,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarClient;

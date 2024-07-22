@@ -10,10 +10,6 @@ const Orders = () => {
 
   return (
     <div>
-      <HeaderClient
-        cartItemsLength={undefined}
-        orderedItemsLength={undefined}
-      />
       <div className="m-5">
         <div className="flex flex-col gap-2">
           <Label className=" text-xl font-bold">Ordered Items</Label>
