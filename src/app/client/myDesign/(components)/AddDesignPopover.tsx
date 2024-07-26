@@ -84,7 +84,7 @@ const PopoverAddDesign = () => {
           <input
             onClick={onSubmit}
             type="submit"
-            value="Send"
+            value="Submit"
             className="mt-2 w-full rounded-sm bg-blue-500 p-2 font-bold text-white"
           />
         </Card>
