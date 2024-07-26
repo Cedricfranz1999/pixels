@@ -70,6 +70,7 @@ export const ordersRouter = createTRPCRouter({
           proofOfPayment: data.proofOfPayment,
           deliveryDate: data.deliveryDate,
           status: data.status,
+          customer: `${data.user.firstname} ${data.user.lastname}`,
         };
       });
       return data;

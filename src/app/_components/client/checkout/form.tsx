@@ -113,12 +113,12 @@ const CheckoutItem = ({
         };
       });
       form.setValue("fields", formattedFields);
+      setTotalPrice(
+        items
+          ?.map((order) => order.product.price * order.quantity)
+          .reduce((acc, curr) => acc + curr, 0),
+      );
     }
-    setTotalPrice(
-      items
-        ?.map((item) => item.product.price)
-        .reduce((acc: any, curr: any) => acc + curr, 0),
-    );
   }, [items, form]);
 
   const onSubmit = async (values: z.infer<typeof cartedItemsSchema>) => {
