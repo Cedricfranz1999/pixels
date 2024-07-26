@@ -8,6 +8,8 @@ import { client_ProductRouter } from "./routers/client/products";
 import { client_CartsRouter } from "./routers/client/carts";
 import { client_CheckoutRouter } from "./routers/client/checkouts";
 import { client_myDesignRouter } from "./routers/client/myDesign";
+import { dashboardRouter } from "./routers/dashboard";
+import { cartsRouter } from "./routers/cart";
 
 /**
  * This is the primary router for your server.
@@ -15,9 +17,11 @@ import { client_myDesignRouter } from "./routers/client/myDesign";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  dashboard: dashboardRouter,
   post: postRouter,
   product: productRouter,
   offers: offersRouter,
+  carts: cartsRouter,
   orders: ordersRouter,
   walk_in: walk_inRouter,
   client_products: client_ProductRouter,

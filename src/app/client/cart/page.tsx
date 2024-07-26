@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import CheckoutItem from "~/app/_components/client/checkout/form";
-import HeaderClient from "~/app/_components/layout/header-client";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";

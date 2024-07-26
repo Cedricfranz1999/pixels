@@ -23,7 +23,7 @@ import { api } from "~/trpc/react";
 import { toast } from "~/components/ui/use-toast";
 import dayjs from "dayjs";
 import { Button } from "~/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { Dot, MoreHorizontal } from "lucide-react";
 
 const Checkouts = () => {
   const [searchKey, setSearchKey] = useState("");
@@ -83,6 +83,7 @@ const Checkouts = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Customer</TableHead>
                   <TableHead>Product name</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Quantity</TableHead>
@@ -98,13 +99,38 @@ const Checkouts = () => {
                   data?.map((checkout, index: number) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">
-                        {checkout.name}
+                        {checkout.customer}
                       </TableCell>
                       <TableCell className="font-medium">
-                        {checkout.price}
+                        <div className="flex flex-col gap-3">
+                          {checkout.name.map((name, index) => {
+                            return (
+                              <div key={index} className="flex gap-0.5">
+                                <Dot />
+                                <p>{name}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </TableCell>
                       <TableCell className="font-medium">
-                        {checkout.quantity}
+                        <div className="flex flex-col gap-3">
+                          {checkout.price.map((price, index) => {
+                            return (
+                              <div key={index} className="flex gap-0.5">
+                                <Dot />
+                                <p>Php: {price}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <div className="flex flex-col gap-3">
+                          {checkout.quantity.map((quantity, index) => {
+                            return <p key={index}>{quantity} pcs</p>;
+                          })}
+                        </div>
                       </TableCell>
                       <TableCell className="font-medium">
                         {checkout.totalAmount}
@@ -169,8 +195,8 @@ const Checkouts = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} className="py-10 text-center">
-                      No offers found
+                    <TableCell colSpan={8} className="py-10 text-center">
+                      No orders found
                     </TableCell>
                   </TableRow>
                 )}
