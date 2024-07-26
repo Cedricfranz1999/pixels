@@ -53,72 +53,82 @@ const FeedbackGrid = () => {
     },
   ];
   return (
-    <div className="mt-20 grid grid-cols-4   gap-4">
-      {feedbacks.map((item, index) => {
-        if (item.inner) {
-          return (
-            <Card
-              key={index}
-              className="bg-re col-span-4 rounded-lg border border-gray-200 bg-white p-4 shadow-lg"
-            >
-              <div className="grid grid-cols-4 gap-4">
-                <div className="col-span-4 col-start-1 ">
-                  <div className=" flex gap-4 rounded-lg border border-gray-200  p-4 shadow-md">
-                    <div>
-                      <Avatar>
-                        <AvatarImage
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </div>{" "}
-                    <div>
+    <>
+      <div className=" flex w-full items-center justify-center">
+        <Label
+          id="1"
+          className="   mt-20 text-4xl font-semibold   tracking-widest "
+        >
+          Client Feedback{" "}
+        </Label>
+      </div>
+      <div className="mt-20 grid grid-cols-4   gap-4">
+        {feedbacks.map((item, index) => {
+          if (item.inner) {
+            return (
+              <Card
+                key={index}
+                className="bg-re col-span-4 rounded-lg border border-gray-200 bg-white p-4 shadow-lg"
+              >
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="col-span-4 col-start-1 ">
+                    <div className=" flex gap-4 rounded-lg border border-gray-200  p-4 shadow-md">
                       <div>
-                        <Label className=" text-blue-400">
-                          {item.inner.name}
+                        <Avatar>
+                          <AvatarImage
+                            src="https://github.com/shadcn.png"
+                            alt="@shadcn"
+                          />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      </div>{" "}
+                      <div>
+                        <div>
+                          <Label className=" text-blue-400">
+                            {item.inner.name}
+                          </Label>
+                        </div>
+                        <Label className="   font-semibold leading-6 text-gray-600">
+                          {item.inner.feedback}
                         </Label>
                       </div>
-                      <Label className="   font-semibold leading-6 text-gray-600">
-                        {item.inner.feedback}
-                      </Label>
                     </div>
                   </div>
                 </div>
+              </Card>
+            );
+          }
+          return (
+            <Card
+              key={index}
+              className=" border-gray-200p-4 flex items-start gap-4 rounded-lg border p-5 shadow-lg"
+            >
+              <div>
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="@shadcn"
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+
+              <div className="">
+                {" "}
+                <div>
+                  <Label className=" font-extrabold text-blue-400">
+                    {item.name}
+                  </Label>
+                </div>
+                <Label className="   font-semibold leading-6 text-gray-600">
+                  {item.feedback}
+                </Label>
               </div>
             </Card>
           );
-        }
-        return (
-          <Card
-            key={index}
-            className=" border-gray-200p-4 flex items-start gap-4 rounded-lg border p-5 shadow-lg"
-          >
-            <div>
-              <Avatar>
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </div>
-
-            <div className="">
-              {" "}
-              <div>
-                <Label className=" font-extrabold text-blue-400">
-                  {item.name}
-                </Label>
-              </div>
-              <Label className="   font-semibold leading-6 text-gray-600">
-                {item.feedback}
-              </Label>
-            </div>
-          </Card>
-        );
-      })}
-    </div>
+        })}
+      </div>
+    </>
   );
 };
 

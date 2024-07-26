@@ -13,17 +13,20 @@ const Header = () => {
           Home
         </Label>
         <Label className=" cursor-pointer font-bold tracking-widest">
-          Service
+          Design
         </Label>
         <Label className=" cursor-pointer font-bold tracking-widest">
-          About
+          Product
         </Label>
         <Label className=" cursor-pointer font-bold tracking-widest">
-          Courses
+          Feedback
         </Label>
         <Label className=" cursor-pointer font-bold tracking-widest">
-          LOGIN
+          Contact
         </Label>
+        <button className=" rounded-b-lg bg-blue-600  px-2  py-1 font-bold text-white">
+          SignIn
+        </button>
       </div>
     </div>
   );
