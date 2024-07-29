@@ -1,7 +1,14 @@
 "use client";
 
 import React from "react";
-import { BarChart2Icon, FolderClosedIcon, Home } from "lucide-react";
+import {
+  BarChart2Icon,
+  FolderClosedIcon,
+  Handshake,
+  Home,
+  Notebook,
+  Shirt,
+} from "lucide-react";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
 import { usePathname } from "next/navigation";
@@ -17,13 +24,28 @@ const links = [
     to: "/admin/products",
   },
   {
+    icon: Handshake,
+    title: "Offers",
+    to: "/admin/offers",
+  },
+  {
+    icon: Notebook,
+    title: "Orders",
+    to: "/admin/orders",
+  },
+  {
+    icon: Shirt,
+    title: "Walk Ins",
+    to: "/admin/walk-in",
+  },
+  {
     icon: FolderClosedIcon,
     title: "Projects",
     to: "/admin/projects",
   },
 ];
 
-const Sidebar = () => {
+const SidebarClient = () => {
   const pathname = usePathname();
   return (
     <div className="top-0 hidden h-full border-r bg-white lg:fixed lg:block lg:w-[280px]">
@@ -59,4 +81,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SidebarClient;

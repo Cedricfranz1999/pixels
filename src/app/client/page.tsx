@@ -1,11 +1,19 @@
-import { SignedIn, UserButton } from "@clerk/nextjs";
+"use client";
+import HeaderClient from "../_components/layout/header-client";
+import Product from "../_components/client/product/product";
+import { api } from "~/trpc/react";
 
 const Client = () => {
+  const { data: checkoutItems, refetch: refetchCheckout } =
+    api.client_checkouts.getAllCheckoutItems.useQuery();
+  const { data: cartedItems, refetch: refetchCart } =
+    api.client_carts.getAllCartedItems.useQuery();
   return (
     <div>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
+      <Product
+        refetchCartItems={refetchCart}
+        refetchOrderedItems={refetchCheckout}
+      />
     </div>
   );
 };

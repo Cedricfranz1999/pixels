@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^5.1.5",
+    "@emailjs/browser": "^4.4.1",
     "@hookform/resolvers": "^3.6.0",
     "@pixlrlte/pixlr-sdk": "^1.3.2",
     "@prisma/client": "^5.14.0",
@@ -56,6 +57,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.11",
     "embla-carousel-react": "^8.1.5",
     "geist": "^1.3.0",
     "input-otp": "^1.2.4",
@@ -68,6 +70,7 @@
     "react-dom": "^18.3.0",
     "react-hook-form": "^7.52.0",
     "react-resizable-panels": "^2.0.19",
+    "recharts": "^2.12.7",
     "server-only": "^0.0.1",
     "sonner": "^1.5.0",
     "superjson": "^2.2.1",
