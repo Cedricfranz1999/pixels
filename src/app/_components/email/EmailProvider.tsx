@@ -13,11 +13,17 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Mail } from "lucide-react";
+import MyDesignOption from "./MyDesignOption";
 
 const EmailProvider = () => {
   const form = useRef<HTMLFormElement>(null);
   const [image, setImage] = useState<string | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
+  const [isUploadfile, setIsUploadFile] = useState<boolean>(true);
+
+  console.log("====================================");
+  console.log(image);
+  console.log("====================================");
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,6 +46,15 @@ const EmailProvider = () => {
         );
     }
   };
+  const handleUploadClick = () => {
+    setIsUploadFile(true);
+    setImage("");
+  };
+
+  const handleDesignClick = () => {
+    setIsUploadFile(false);
+    setImage("");
+  };
 
   return (
     <Popover>
@@ -59,6 +74,25 @@ const EmailProvider = () => {
             <Label className="items-center text-sm font-bold text-blue-500">
               Send your design
             </Label>
+            <div className=" my-10 flex justify-between gap-3 border-y-2  bg-blue-500 px-10 py-4 shadow-sm drop-shadow-sm ">
+              <Label
+                className=" cursor-pointer  font-bold  text-white"
+                onClick={handleUploadClick}
+              >
+                Upload{" "}
+              </Label>
+              <Label
+                className=" cursor-pointer font-bold  text-white"
+                onClick={handleDesignClick}
+              >
+                My Design{" "}
+              </Label>
+            </div>
+            <div
+              className={`${isUploadfile || image ? "hidden" : ""} h-96 w-96`}
+            >
+              <MyDesignOption setImage={setImage} />
+            </div>
             {image ? (
               <>
                 <div className=" relative">
@@ -73,7 +107,9 @@ const EmailProvider = () => {
                 {image && <input type="hidden" name="image" value={image} />}
               </>
             ) : (
-              <UploadFile setIsEditing={setEditing} setImage={setImage} />
+              <div className={isUploadfile ? "" : "hidden"}>
+                <UploadFile setIsEditing={setEditing} setImage={setImage} />
+              </div>
             )}
             <Label className="text-sm font-bold text-blue-500">Location</Label>
             <input

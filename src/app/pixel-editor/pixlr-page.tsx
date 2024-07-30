@@ -21,6 +21,10 @@ const PixelPage: React.FC<PixelEditorProps> = ({ token }) => {
   const [editor, setEditor] = useState<Editor | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  console.log("====================================");
+  console.log(editor);
+  console.log("====================================");
+
   const filesChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
 
