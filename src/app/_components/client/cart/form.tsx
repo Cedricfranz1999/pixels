@@ -83,6 +83,7 @@ const AddToCartForm = ({
     if (item) {
       form.setValue("product", item.name);
       form.setValue("price", item.price.toString());
+      form.setValue("quantity", "1");
     }
   }, [item, form]);
 
@@ -153,7 +154,12 @@ const AddToCartForm = ({
                 <FormItem>
                   <FormLabel className="text-right">Quantity</FormLabel>
                   <FormControl>
-                    <Input placeholder="Quantity" {...field} />
+                    <Input
+                      placeholder="Quantity"
+                      {...field}
+                      type="number"
+                      defaultValue={1}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

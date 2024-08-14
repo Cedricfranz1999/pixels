@@ -42,6 +42,7 @@ const formSchema = z.object({
   size: z.string({ required_error: "Size is required" }),
   price: z.string({ required_error: "Price is required" }),
   quantity: z.string({ required_error: "Quantity is required" }).min(1),
+  totalPrice: z.number(),
 });
 
 const DirectOrder = ({
@@ -62,7 +63,7 @@ const DirectOrder = ({
     onSuccess: () => {
       toast({
         title: "SUCCESS",
-        description: "Added to cart successfully",
+        description: "Ordered successfully",
       });
       refetch();
       refetchOrderedItems && refetchOrderedItems();
@@ -102,14 +103,27 @@ const DirectOrder = ({
 
   useEffect(() => {
     setTotalPrice(quantity * parseFloat(form.getValues("price")));
-  }, [quantity, form]);
+    form.setValue("totalPrice", totalPrice);
+  }, [quantity, form, totalPrice]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await directOrder.mutateAsync({
-      productId: item?.id as number,
-      quantity: parseInt(values.quantity),
-      totalPrice: totalPrice,
-    });
+    let hasErrors = false;
+
+    if (parseInt(values.quantity) === 0) {
+      form.setError("quantity", {
+        type: "manual",
+        message: "Quantity cannot be zero",
+      });
+      hasErrors = true;
+    }
+
+    if (!hasErrors) {
+      await directOrder.mutateAsync({
+        productId: item?.id as number,
+        quantity: parseInt(values.quantity),
+        totalPrice: totalPrice,
+      });
+    }
   };
 
   const handleOpenChange = () => {
@@ -128,103 +142,128 @@ const DirectOrder = ({
             onSubmit={form.handleSubmit(onSubmit as any)}
             className="grid gap-4 py-4"
           >
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Image:</FormLabel>
-                  <FormControl>
-                    <Avatar className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-md border">
-                      <AvatarImage
+            <div className="flex gap-5">
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Image:</FormLabel>
+                    <FormControl>
+                      <Avatar className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-md border">
+                        <AvatarImage
+                          {...field}
+                          src={item?.image ? item.image : undefined}
+                        />
+                        <AvatarFallback>Item</AvatarFallback>
+                      </Avatar>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="product"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Product:</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <FormField
+                control={form.control}
+                name="brand"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Brand:</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Color:</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="size"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Size:</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Price per 1pc:</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Quantity" {...field} disabled />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Quantity:</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Quantity"
                         {...field}
-                        src={item?.image ? item.image : undefined}
+                        type="number"
+                        defaultValue={1}
                       />
-                      <AvatarFallback>Item</AvatarFallback>
-                    </Avatar>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="product"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Product:</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Brand:</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Color:</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="size"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Size:</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Price per 1pc:</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Quantity" {...field} disabled />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Quantity:</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Quantity" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="totalPrice"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-right">Total Price:</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <DialogFooter className="mt-4">
               <Button
