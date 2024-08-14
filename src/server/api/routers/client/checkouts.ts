@@ -20,7 +20,12 @@ export const client_CheckoutRouter = createTRPCRouter({
   addToCheckout: publicProcedure
     .input(
       z.object({
-        orderId: z.array(z.number()),
+        orderDetails: z.array(
+          z.object({
+            id: z.number(),
+            quantity: z.number(),
+          }),
+        ),
         totalPrice: z.number(),
       }),
     )
@@ -35,10 +40,12 @@ export const client_CheckoutRouter = createTRPCRouter({
       });
 
       await Promise.all(
-        input.orderId.map(async (id) => {
+        input.orderDetails.map(async (data) => {
+          const { id, quantity } = data;
           await ctx.db.order.update({
             where: { id },
             data: {
+              quantity,
               status: "ORDERED",
               checkoutId: checkout.id,
             },

@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
+import { toast } from "~/components/ui/use-toast";
 import { api } from "~/trpc/react";
 import { type Cart } from "~/types/cart";
 
@@ -14,6 +15,24 @@ const Carts = () => {
   const [checkoutModalOpen, setCheckoutModalOpen] = useState<boolean>(false);
 
   const { data, refetch } = api.client_carts.getAllCartedItems.useQuery();
+
+  const deleteCart = api.client_carts.deleteCartedItems.useMutation({
+    onSuccess: async () => {
+      toast({
+        title: "Success",
+        description: "Order successfully deleted",
+      });
+      await refetch();
+    },
+    onError: async () => {
+      await refetch();
+      toast({
+        title: "ERROR",
+        description: "Server Error",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleCheckboxChange = (cart: Cart) => {
     setCheckedItems((prevItems) => {
@@ -29,6 +48,15 @@ const Carts = () => {
     setCheckoutModalOpen(true);
   };
 
+  const handleDeleteCart = async () => {
+    const orderIds = Array.from(new Set(checkedItems.map((order) => order.id)));
+
+    await deleteCart.mutateAsync({
+      orderIds,
+    });
+    setCheckedItems([]);
+  };
+
   return (
     <div>
       <div className="m-5">
@@ -39,7 +67,12 @@ const Carts = () => {
           </div>
           <div className="flex justify-end">
             {checkedItems.length > 0 && (
-              <Button onClick={handleCheckoutItem}>Checkout</Button>
+              <div className="flex gap-3">
+                <Button onClick={handleCheckoutItem}>Checkout</Button>
+                <Button onClick={handleDeleteCart} variant={"destructive"}>
+                  Delete
+                </Button>
+              </div>
             )}
           </div>
         </div>

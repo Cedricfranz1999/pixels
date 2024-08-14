@@ -33,4 +33,20 @@ export const client_CartsRouter = createTRPCRouter({
         },
       });
     }),
+
+  deleteCartedItems: publicProcedure
+    .input(
+      z.object({
+        orderIds: z.array(z.number()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await Promise.all(
+        input.orderIds.map(async (id) => {
+          await ctx.db.order.delete({
+            where: { id },
+          });
+        }),
+      );
+    }),
 });

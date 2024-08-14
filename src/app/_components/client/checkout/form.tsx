@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "~/components/ui/use-toast";
 import { api } from "~/trpc/react";
@@ -97,6 +97,11 @@ const CheckoutItem = ({
     name: "fields",
   });
 
+  const formData = useWatch({
+    control: form.control,
+    name: "fields",
+  });
+
   useEffect(() => {
     if (items) {
       const formattedFields = items.map((data) => {
@@ -121,15 +126,42 @@ const CheckoutItem = ({
     }
   }, [items, form]);
 
-  const onSubmit = async (values: z.infer<typeof cartedItemsSchema>) => {
-    const orderIds = Array.from(
-      new Set(values.fields.map((order) => order.id)),
-    );
+  useEffect(() => {
+    if (formData) {
+      const totalPrice = formData
+        .map((order) => parseFloat(order.price) * parseFloat(order.quantity))
+        .reduce((acc, curr) => acc + curr, 0);
 
-    await checkoutItem.mutateAsync({
-      orderId: orderIds,
-      totalPrice: totalPrice,
+      if (!isNaN(totalPrice)) {
+        setTotalPrice(totalPrice);
+      } else setTotalPrice(0);
+    }
+  }, [formData, setTotalPrice]);
+
+  const onSubmit = async (values: z.infer<typeof cartedItemsSchema>) => {
+    let hasErrors = false;
+
+    values.fields.forEach((order, index) => {
+      if (parseInt(order.quantity) === 0) {
+        form.setError(`fields.${index}.quantity`, {
+          type: "manual",
+          message: "Quantity cannot be zero",
+        });
+        hasErrors = true;
+      }
     });
+
+    const orderDetails = values.fields.map((order) => ({
+      id: order.id,
+      quantity: parseInt(order.quantity),
+    }));
+
+    if (!hasErrors) {
+      await checkoutItem.mutateAsync({
+        orderDetails,
+        totalPrice: totalPrice,
+      });
+    }
   };
 
   const handleOpenChange = () => {
@@ -151,35 +183,37 @@ const CheckoutItem = ({
             {fields.map((items, index) => {
               return (
                 <>
-                  <FormField
-                    control={form.control}
-                    name={`fields.${index}.image`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-right">Image:</FormLabel>
-                        <FormControl>
-                          <Avatar className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-md border">
-                            <AvatarImage {...field} src={items.image} />
-                            <AvatarFallback>Item</AvatarFallback>
-                          </Avatar>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`fields.${index}.product`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-right">Product:</FormLabel>
-                        <FormControl>
-                          <Input {...field} disabled />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="flex gap-5">
+                    <FormField
+                      control={form.control}
+                      name={`fields.${index}.image`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-right">Image:</FormLabel>
+                          <FormControl>
+                            <Avatar className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-md border">
+                              <AvatarImage {...field} src={items.image} />
+                              <AvatarFallback>Item</AvatarFallback>
+                            </Avatar>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`fields.${index}.product`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-right">Product:</FormLabel>
+                          <FormControl>
+                            <Input {...field} disabled />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <div className="grid grid-cols-3 gap-2">
                     <FormField
                       control={form.control}
@@ -246,7 +280,12 @@ const CheckoutItem = ({
                             Quantity:
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Quantity" {...field} disabled />
+                            <Input
+                              type="number"
+                              defaultValue={1}
+                              placeholder="Quantity"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
