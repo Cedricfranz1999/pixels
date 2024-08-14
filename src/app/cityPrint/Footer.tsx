@@ -1,9 +1,17 @@
+'use client'
+
 import { Facebook, LucideTwitter, Phone, Smartphone, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { Label } from "~/components/ui/label";
+import EmailProvider from "../_components/email/EmailProvider";
 
 const Footer = () => {
+
+  const router = useRouter()
+
   return (
+
     <div className=" flex w-full justify-between bg-blue-400 px-20 py-4">
       <div className=" flex flex-col items-start gap-4 ">
         <Label className=" ml-4 text-xl font-extrabold text-white">
@@ -34,10 +42,11 @@ const Footer = () => {
         <Label className=" text-xl font-extrabold text-white">
           Social Media
         </Label>
-        <div className=" flex items-center gap-2">
-          <Facebook className=" font-bold  text-white" />
-          <LucideTwitter className=" font-bold  text-white" />
-          <Mail className=" font-bold  text-white" />
+        <div className=" flex items-center gap-7">
+          <Facebook className=" font-bold  text-white cursor-pointer " onClick={()=> router.push("https://www.facebook.com/people/CityPrint-Sublimation-Sportswear/100084044829331/")} />
+          <LucideTwitter className=" font-bold  text-white cursor-pointer "  />
+          <EmailProvider />
+
         </div>
       </div>
     </div>

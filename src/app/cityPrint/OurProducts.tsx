@@ -10,6 +10,7 @@ import { api } from "~/trpc/react";
 import { type Product } from "~/types/product";
 import DirectOrder from "../_components/client/direct-order/form";
 import AddToCartForm from "../_components/client/cart/form";
+import { useUser } from "@clerk/nextjs";
 
 const CATEGORYIES = [
   { value: "", label: "ALL" },
@@ -53,10 +54,13 @@ const OurProducts = ({
   const [item, setItem] = useState<Product | null>(null);
   const [orderItem, setOrderItem] = useState<Product | null>(null);
 
+  const user = useUser()
+
   const { data, refetch } = api.client_products.getAllProducts.useQuery({
     category: categoryFilter === "ALL" ? "" : categoryFilter,
     search: searchKey,
   });
+
 
   // search
   const onSearch = async (value: string) => {

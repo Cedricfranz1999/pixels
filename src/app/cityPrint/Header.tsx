@@ -1,7 +1,11 @@
+'use client'
+import { useRouter } from "next/navigation";
 import React from "react";
 import { Label } from "~/components/ui/label";
 
 const Header = () => {
+
+  const router = useRouter()
   return (
     <div className="  mt-5 flex  w-full   items-center justify-between">
       <div className=" gap- flex items-center">
@@ -24,7 +28,7 @@ const Header = () => {
         <Label className=" cursor-pointer font-bold tracking-widest">
           Contact
         </Label>
-        <button className=" rounded-b-lg bg-blue-600  px-2  py-1 font-bold text-white">
+        <button  onClick={()=> router.push('/sign-in')} className=" rounded-b-lg bg-blue-600  px-2  py-1  hover:brightness-125 font-bold text-white">
           SignIn
         </button>
       </div>

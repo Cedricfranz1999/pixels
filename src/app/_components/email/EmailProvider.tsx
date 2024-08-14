@@ -13,11 +13,17 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Mail } from "lucide-react";
+import MyDesignOption from "./MyDesignOption";
 
 const EmailProvider = () => {
   const form = useRef<HTMLFormElement>(null);
   const [image, setImage] = useState<string | null>(null);
   const [editing, setEditing] = useState<boolean>(false);
+  const [isUploadfile, setIsUploadFile] = useState<boolean>(true);
+
+  console.log("====================================");
+  console.log(image);
+  console.log("====================================");
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,6 +46,15 @@ const EmailProvider = () => {
         );
     }
   };
+  const handleUploadClick = () => {
+    setIsUploadFile(true);
+    setImage("");
+  };
+
+  const handleDesignClick = () => {
+    setIsUploadFile(false);
+    setImage("");
+  };
 
   return (
     <Popover>
@@ -59,6 +74,33 @@ const EmailProvider = () => {
             <Label className="items-center text-sm font-bold text-blue-500">
               Send your design
             </Label>
+            <div className=" mb-8 mt-3 flex h-10  justify-between     border-y-2  shadow-sm drop-shadow-sm ">
+              <div
+                className={`  flex flex-1 items-center  justify-center bg-blue-500 ${isUploadfile ? "bg-blue-700" : ""} `}
+              >
+                <Label
+                  className=" cursor-pointer  font-bold  text-white"
+                  onClick={handleUploadClick}
+                >
+                  Upload{" "}
+                </Label>
+              </div>
+              <div
+                className={`  flex flex-1 items-center  justify-center bg-blue-500 ${!isUploadfile ? "bg-blue-700" : ""} `}
+              >
+                <Label
+                  className=" cursor-pointer font-bold  text-white"
+                  onClick={handleDesignClick}
+                >
+                  My Design{" "}
+                </Label>
+              </div>
+            </div>
+            <div
+              className={`${isUploadfile || image ? "hidden" : ""} h-96 w-96`}
+            >
+              <MyDesignOption setImage={setImage} />
+            </div>
             {image ? (
               <>
                 <div className=" relative">
@@ -73,7 +115,9 @@ const EmailProvider = () => {
                 {image && <input type="hidden" name="image" value={image} />}
               </>
             ) : (
-              <UploadFile setIsEditing={setEditing} setImage={setImage} />
+              <div className={isUploadfile ? "" : "hidden"}>
+                <UploadFile setIsEditing={setEditing} setImage={setImage} />
+              </div>
             )}
             <Label className="text-sm font-bold text-blue-500">Location</Label>
             <input

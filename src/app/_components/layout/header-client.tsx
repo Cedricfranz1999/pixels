@@ -7,6 +7,8 @@ import { SignedIn, useUser, UserButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import EmailProvider from "../email/EmailProvider";
 import { api } from "~/trpc/react";
+import Messenger from "../message/Messenger";
+import MessengerCustomer from "../message/MessengerCustomer";
 
 type HeaderProps = {
   cartItemsLength?: number;
@@ -56,6 +58,7 @@ const HeaderClient = () => {
               <Label className="   text-white-300  cursor-pointer bg-red-400  px-2 py-1">
                 {cartedItems?.length}
               </Label>
+              111
             </div>{" "}
             <div className=" flex cursor-pointer items-center justify-center gap-1 ">
               <Bell />
@@ -64,7 +67,11 @@ const HeaderClient = () => {
                 5
               </Label>
             </div>{" "}
-            <EmailProvider />
+            <div className="  mx-1011 flex items-center gap-3">
+              <MessengerCustomer />
+
+              <EmailProvider />
+            </div>
             <SignedIn>
               <div>
                 <div className="flex w-full flex-shrink-0 items-center justify-between gap-2 p-2">

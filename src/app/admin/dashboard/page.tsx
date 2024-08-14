@@ -51,13 +51,10 @@ const Dashboard = () => {
     data: reportTable,
     isLoading,
     refetch,
-  } = api.dashboard.reportTable.useQuery(
-    {
-      startDate: startDate ? startDate : dayjs().toDate(),
-      endDate: endDate ? endDate : dayjs().toDate(),
-    },
-    // { enabled: !new Date() },
-  );
+  } = api.dashboard.reportTable.useQuery({
+    startDate: startDate ? startDate : dayjs().toDate(),
+    endDate: endDate ? endDate : dayjs().toDate(),
+  });
 
   const generateDateArray = (start: Date, end: Date) => {
     const arr = [];
