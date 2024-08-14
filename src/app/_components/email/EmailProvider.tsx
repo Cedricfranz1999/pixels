@@ -74,19 +74,27 @@ const EmailProvider = () => {
             <Label className="items-center text-sm font-bold text-blue-500">
               Send your design
             </Label>
-            <div className=" my-10 flex justify-between gap-3 border-y-2  bg-blue-500 px-10 py-4 shadow-sm drop-shadow-sm ">
-              <Label
-                className=" cursor-pointer  font-bold  text-white"
-                onClick={handleUploadClick}
+            <div className=" mb-8 mt-3 flex h-10  justify-between     border-y-2  shadow-sm drop-shadow-sm ">
+              <div
+                className={`  flex flex-1 items-center  justify-center bg-blue-500 ${isUploadfile ? "bg-blue-700" : ""} `}
               >
-                Upload{" "}
-              </Label>
-              <Label
-                className=" cursor-pointer font-bold  text-white"
-                onClick={handleDesignClick}
+                <Label
+                  className=" cursor-pointer  font-bold  text-white"
+                  onClick={handleUploadClick}
+                >
+                  Upload{" "}
+                </Label>
+              </div>
+              <div
+                className={`  flex flex-1 items-center  justify-center bg-blue-500 ${!isUploadfile ? "bg-blue-700" : ""} `}
               >
-                My Design{" "}
-              </Label>
+                <Label
+                  className=" cursor-pointer font-bold  text-white"
+                  onClick={handleDesignClick}
+                >
+                  My Design{" "}
+                </Label>
+              </div>
             </div>
             <div
               className={`${isUploadfile || image ? "hidden" : ""} h-96 w-96`}

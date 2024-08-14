@@ -60,7 +60,7 @@ const MyDesignOption: React.FC<PropsData> = ({ setImage }) => {
                   width={100}
                   alt={data.description || "Design Image"}
                 />
-                <Label className=" rounded-sm bg-orange-500 p-5 font-bold text-white ">
+                <Label className=" rounded-sm bg-blue-500 px-4 py-1 font-bold text-white ">
                   {data.description}
                 </Label>
               </Card>

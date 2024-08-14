@@ -17,11 +17,6 @@ import { Card } from "~/components/ui/card";
 const links = [
   {
     icon: BarChart2Icon,
-    title: "Dashboard",
-    to: "/client",
-  },
-  {
-    icon: BarChart2Icon,
     title: "Products",
     to: "/client",
   },
@@ -35,11 +30,6 @@ const links = [
     icon: Handshake,
     title: "Editor",
     to: "/client/Editor",
-  },
-  {
-    icon: Handshake,
-    title: "Re",
-    to: "/admin/offers",
   },
 ];
 
