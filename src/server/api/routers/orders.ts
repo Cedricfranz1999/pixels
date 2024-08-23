@@ -9,42 +9,129 @@ export const ordersRouter = createTRPCRouter({
     .input(
       z.object({
         search: z.string().optional(),
+        status: z.any(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { search, status } = input;
+      const order = await ctx.db.checkout.findMany({
+        where: {
+          status: {
+            not: "DONE",
+          },
+          AND: [
+            {
+              status: status ? status : undefined,
+              OR: [
+                {
+                  order: {
+                    some: {
+                      product: {
+                        name: {
+                          contains: search,
+                          mode: "insensitive",
+                        },
+                      },
+                    },
+                  },
+                },
+                {
+                  user: {
+                    OR: [
+                      {
+                        firstname: {
+                          contains: search,
+                          mode: "insensitive",
+                        },
+                      },
+                      {
+                        lastname: {
+                          contains: search,
+                          mode: "insensitive",
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        include: {
+          user: true,
+          order: {
+            include: { product: true },
+          },
+        },
+      });
+
+      const data = order.map((data) => {
+        const totalAmount = data.order
+          .map((order) => order.product.price * order.quantity)
+          .reduce((acc, curr) => acc + curr, 0);
+
+        return {
+          id: data.id,
+          name: data.order.map((order) => order.product.name),
+          price: data.order.map((price) => price.product.price),
+          quantity: data.order.map((order) => order.quantity),
+          totalAmount,
+          proofOfPayment: data.proofOfPayment,
+          deliveryDate: data.deliveryDate,
+          status: data.status,
+          customer: `${data.user.firstname} ${data.user.lastname}`,
+        };
+      });
+      return data;
+    }),
+
+  getAllArchives: publicProcedure
+    .input(
+      z.object({
+        search: z.string().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
       const { search } = input;
       const order = await ctx.db.checkout.findMany({
         where: {
-          OR: [
+          status: {
+            equals: "DONE",
+          },
+          AND: [
             {
-              order: {
-                some: {
-                  product: {
-                    name: {
-                      contains: search,
-                      mode: "insensitive",
+              OR: [
+                {
+                  order: {
+                    some: {
+                      product: {
+                        name: {
+                          contains: search,
+                          mode: "insensitive",
+                        },
+                      },
                     },
                   },
                 },
-              },
-            },
-            {
-              user: {
-                OR: [
-                  {
-                    firstname: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
+                {
+                  user: {
+                    OR: [
+                      {
+                        firstname: {
+                          contains: search,
+                          mode: "insensitive",
+                        },
+                      },
+                      {
+                        lastname: {
+                          contains: search,
+                          mode: "insensitive",
+                        },
+                      },
+                    ],
                   },
-                  {
-                    lastname: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
-                  },
-                ],
-              },
+                },
+              ],
             },
           ],
         },
