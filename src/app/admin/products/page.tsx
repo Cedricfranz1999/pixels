@@ -20,11 +20,12 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { api } from "~/trpc/react";
 import { type Product } from "~/types/product";
 import ProductForm from "~/app/_components/product/dialog";
 import { toast } from "~/components/ui/use-toast";
+import { debounce } from "lodash";
 const categories = [
   "ALL",
   "JERSEY",
@@ -85,22 +86,30 @@ const Products = () => {
     },
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedRefetch = useCallback(
+    debounce(() => {
+      void refetch();
+    }, 2000),
+    [],
+  );
+
   // search
   const onSearch = async (value: string) => {
     setSearchKey(value);
-    await refetch();
+    debouncedRefetch();
   };
 
   // category filter
   const onCategoryFilter = async (value: any) => {
     setCategoryFilter(value);
-    await refetch();
+    debouncedRefetch();
   };
 
   //size filter
   const onSizeFilter = async (value: any) => {
     setSizeFilter(value);
-    await refetch();
+    debouncedRefetch();
   };
 
   const handleEditProduct = (product: Product) => {

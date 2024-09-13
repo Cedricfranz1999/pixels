@@ -10,8 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { api } from "~/trpc/react";
+import { debounce } from "lodash";
 
 const Carts = () => {
   const [searchKey, setSearchKey] = useState("");
@@ -20,10 +21,18 @@ const Carts = () => {
     search: searchKey,
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedRefetch = useCallback(
+    debounce(() => {
+      void refetch();
+    }, 2000),
+    [],
+  );
+
   // search
   const onSearch = async (value: string) => {
     setSearchKey(value);
-    await refetch();
+    debouncedRefetch();
   };
 
   return (

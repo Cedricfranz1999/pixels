@@ -59,7 +59,7 @@ const DirectOrder = ({
     resolver: zodResolver(formSchema),
   });
 
-  const directOrder = api.client_checkouts.directOrder.useMutation({
+  const { mutateAsync }: any = api.client_checkouts.directOrder.useMutation({
     onSuccess: () => {
       toast({
         title: "SUCCESS",
@@ -118,7 +118,7 @@ const DirectOrder = ({
     }
 
     if (!hasErrors) {
-      await directOrder.mutateAsync({
+      await mutateAsync({
         productId: item?.id as number,
         quantity: parseInt(values.quantity),
         totalPrice: totalPrice,
