@@ -8,4 +8,5 @@ export type Product = {
   stocks: string;
   price: number;
   category: string;
+  orders?: any;
 };
