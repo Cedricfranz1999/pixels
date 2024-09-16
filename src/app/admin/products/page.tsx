@@ -26,30 +26,7 @@ import { type Product } from "~/types/product";
 import ProductForm from "~/app/_components/product/dialog";
 import { toast } from "~/components/ui/use-toast";
 import { debounce } from "lodash";
-const categories = [
-  "ALL",
-  "JERSEY",
-  "V_NECK",
-  "POLO",
-  "TANK_TOP",
-  "ROUND_NECK",
-  "CREW_NECK",
-  "LONG_SLEEVE",
-  "RAGLAN",
-  "HENLEY",
-  "SLIM_FIT",
-  "OVERSIZED",
-  "BASKETBALL_SHORTS",
-  "RUNNING_SHORTS",
-  "CARGO_SHORTS",
-  "DENIM_SHORTS",
-  "BOARD_SHORTS",
-  "GYM_SHORTS",
-  "CHINO_SHORTS",
-  "SWEAT_SHORTS",
-  "SWIM_TRUNKS",
-  "SKATE_SHORTS",
-];
+import { type Category } from "~/types/category";
 
 const size = [
   "ALL",
@@ -64,35 +41,37 @@ const size = [
 ];
 
 const Products = () => {
-  const [searchKey, setSearchKey] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<any>();
-  const [sizeFilter, setSizeFilter] = useState<any>();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [open, setOpen] = useState(false);
+    const [searchKey, setSearchKey] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState<any>();
+    const [sizeFilter, setSizeFilter] = useState<any>();
+    const [product, setProduct] = useState<Product | null>(null);
+    const [open, setOpen] = useState(false);
 
-  const { data, isLoading, refetch } = api.product.getAllProducts.useQuery({
-    category: categoryFilter === "ALL" ? "" : categoryFilter,
-    search: searchKey,
-    size: sizeFilter === "ALL" ? "" : sizeFilter,
-  });
+    const { data: categories } = api.category.getAllCategories.useQuery()
 
-  const deleteProduct = api.product.deleteProduct.useMutation({
-    onSuccess: async () => {
-      toast({
-        title: "SUCCESS",
-        description: "Product successfully deleted",
-      });
-      await refetch();
-    },
-  });
+    const { data, isLoading, refetch } = api.product.getAllProducts.useQuery({
+        category: categoryFilter === "ALL" ? "" : categoryFilter,
+        search: searchKey,
+        size: sizeFilter === "ALL" ? "" : sizeFilter,
+    });
+
+    const deleteProduct = api.product.deleteProduct.useMutation({
+        onSuccess: async () => {
+        toast({
+            title: "SUCCESS",
+            description: "Product successfully deleted",
+        });
+        await refetch();
+        },
+    });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedRefetch = useCallback(
-    debounce(() => {
-      void refetch();
-    }, 2000),
-    [],
-  );
+    const debouncedRefetch = useCallback(
+        debounce(() => {
+        void refetch();
+        }, 2000),
+        [],
+    );
 
   // search
   const onSearch = async (value: string) => {
@@ -129,6 +108,7 @@ const Products = () => {
         open={open}
         setOpen={setOpen}
         product={product}
+        categories={categories as Category[]}
         refetch={refetch}
       />
       <div className="flex items-center justify-between">
@@ -186,13 +166,13 @@ const Products = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {categories.map((category, index) => (
+                  {categories?.map((category, index) => (
                     <DropdownMenuCheckboxItem
                       key={index}
                       onClick={() => onCategoryFilter(category)}
                       checked={categoryFilter == category}
                     >
-                      {category}
+                      {category.key}
                     </DropdownMenuCheckboxItem>
                   ))}
                 </DropdownMenuContent>
@@ -251,7 +231,7 @@ const Products = () => {
                       <TableCell>{product.color}</TableCell>
                       <TableCell>{product.stocks}</TableCell>
                       <TableCell>{product.price}</TableCell>
-                      <TableCell>{product.category}</TableCell>
+                      <TableCell>{product.category.name}</TableCell>
                       <TableCell className="w-20">
                         <div className="flex items-start justify-start gap-3">
                           <Button

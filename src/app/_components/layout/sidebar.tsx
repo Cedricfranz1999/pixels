@@ -7,6 +7,7 @@ import {
   Handshake,
   Home,
   Notebook,
+  Settings,
   Shirt,
 } from "lucide-react";
 import Link from "next/link";
@@ -39,9 +40,9 @@ const links = [
     to: "/admin/walk-in",
   },
   {
-    icon: FolderClosedIcon,
-    title: "Projects",
-    to: "/admin/projects",
+    icon: Settings,
+    title: "Settings",
+    to: "/admin/settings",
   },
 ];
 

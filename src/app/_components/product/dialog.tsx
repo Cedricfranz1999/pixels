@@ -32,12 +32,14 @@ import {
 import { toast } from "~/components/ui/use-toast";
 import { api } from "~/trpc/react";
 import { type Product } from "~/types/product";
+import { type Category } from "~/types/category";
 import UploadFile from "../uploader/upload";
 
 type ProductProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   product: Product | null;
+  categories: Category[]
   refetch: () => void;
 };
 
@@ -52,30 +54,6 @@ const SIZE = [
   { value: "TRIPELARGE", label: "Triple Large" },
 ];
 
-const CATEGORY = [
-  { value: "JERSEY", label: "Jersey" },
-  { value: "V_NECK", label: "V-Neck" },
-  { value: "POLO", label: "Polo" },
-  { value: "TANK_TOP", label: "Tank Top" },
-  { value: "ROUND_NECK", label: "Round Neck" },
-  { value: "CREW_NECK", label: "Crew Neck" },
-  { value: "LONG_SLEEVE", label: "Long Sleeve" },
-  { value: "RAGLAN", label: "Raglan" },
-  { value: "HENLEY", label: "Henley" },
-  { value: "SLIM_FIT", label: "Slim Fit" },
-  { value: "OVERSIZED", label: "Oversized" },
-  { value: "BASKETBALL_SHORTS", label: "Basketball Shorts" },
-  { value: "RUNNING_SHORTS", label: "Running Shorts" },
-  { value: "CARGO_SHORTS", label: "Cargo Shorts" },
-  { value: "DENIM_SHORTS", label: "Denim Shorts" },
-  { value: "BOARD_SHORTS", label: "Board Shorts" },
-  { value: "GYM_SHORTS", label: "Gym Shorts" },
-  { value: "CHINO_SHORTS", label: "Chino Shorts" },
-  { value: "SWEAT_SHORTS", label: "Sweat Shorts" },
-  { value: "SWIM_TRUNKS", label: "Swim Trunks" },
-  { value: "SKATE_SHORTS", label: "Skate Shorts" },
-];
-
 const formSchema = z.object({
   name: z.string({ required_error: "Product name is required" }).min(2).max(50),
   image: z.string().nullable(),
@@ -84,10 +62,10 @@ const formSchema = z.object({
   color: z.string().nullable(),
   stocks: z.string({ required_error: "Stocks is required" }),
   price: z.string({ required_error: "Price is required" }),
-  category: z.any({ required_error: "Category is required" }),
+  categoryId: z.string({ required_error: "Category is required" }),
 });
 
-const ProductForm = ({ open, setOpen, product, refetch }: ProductProps) => {
+const ProductForm = ({ open, setOpen, product, categories, refetch }: ProductProps) => {
   const [productImage, setProductImage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -95,37 +73,15 @@ const ProductForm = ({ open, setOpen, product, refetch }: ProductProps) => {
     resolver: zodResolver(formSchema),
   });
 
-  const createProduct = api.product.createProduct.useMutation({
+  const upsertProduct = api.product.upsertProduct.useMutation({
     onSuccess: () => {
       toast({
         title: "SUCCESS",
-        description: "Product successfully created",
+        description: `Product successfully ${product ? 'updated' : 'created'}`,
       });
       refetch();
       setOpen(false);
       form.reset();
-    },
-    onError: () => {
-      refetch();
-      setOpen(false);
-      form.reset();
-      toast({
-        title: "ERROR",
-        description: "Server Error",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateProduct = api.product.updateProduct.useMutation({
-    onSuccess: () => {
-      refetch();
-      setOpen(false);
-      form.reset();
-      toast({
-        title: "SUCCESS",
-        description: "Product successfully updated",
-      });
     },
     onError: () => {
       refetch();
@@ -147,7 +103,7 @@ const ProductForm = ({ open, setOpen, product, refetch }: ProductProps) => {
       form.setValue("color", product.color);
       form.setValue("stocks", product.stocks);
       form.setValue("price", product.price.toString());
-      form.setValue("category", product.category);
+      form.setValue("categoryId", product.category.id);
 
       setProductImage(product.image);
     }
@@ -158,22 +114,13 @@ const ProductForm = ({ open, setOpen, product, refetch }: ProductProps) => {
   }, [isEditing, form, productImage]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (product) {
-      await updateProduct.mutateAsync({
+    await upsertProduct.mutateAsync({
         ...values,
-        id: product.id,
+        id: product?.id,
         size: values.size,
         price: parseFloat(values.price),
-        category: values.category,
+        categoryId: parseInt(values.categoryId),
       });
-    } else {
-      await createProduct.mutateAsync({
-        ...values,
-        size: values.size,
-        price: parseFloat(values.price),
-        category: values.category,
-      });
-    }
   };
 
   const handleOpenChange = () => {
@@ -229,101 +176,110 @@ const ProductForm = ({ open, setOpen, product, refetch }: ProductProps) => {
                 </FormItem>
               )}
             />
+            <div className="flex gap-3 w-full">
+                <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem className="w-1/2">
+                            <FormLabel className="text-right">Name</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="size"
+                    render={({ field }) => (
+                        <FormItem className="w-1/2">
+                            <FormLabel className="text-right">Size</FormLabel>
+                            <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                            >
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Size" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {SIZE.map((size, index) => (
+                                        <SelectItem key={index} value={size.value}>
+                                        {size.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+
+            <div className="flex gap-3 w-full">
+                <FormField
+                    control={form.control}
+                    name="brand"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel className="text-right">Brand</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Brand" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="color"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel className="text-right">Color</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Color" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+            
+            <div className="flex gap-3 w-full">
+                <FormField
+                    control={form.control}
+                    name="stocks"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel className="text-right">Stocks</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Stocks" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel className="text-right">Price</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Price" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+            
             <FormField
               control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="size"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Size</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Size" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {SIZE.map((size, index) => (
-                        <SelectItem key={index} value={size.value}>
-                          {size.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Brand</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Brand" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Color</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Color" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="stocks"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Stocks</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Stocks" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-right">Price</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Price" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
+              name="categoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right">Category</FormLabel>
@@ -337,9 +293,9 @@ const ProductForm = ({ open, setOpen, product, refetch }: ProductProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {CATEGORY.map((category, index) => (
-                        <SelectItem key={index} value={category.value}>
-                          {category.label}
+                      {categories?.map((category, index) => (
+                        <SelectItem key={index} value={String(category.id)}>
+                          {category.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

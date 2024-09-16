@@ -1,9 +1,9 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { api } from "~/trpc/server";
 export default async function Home() {
-  const user = await currentUser();
+  const user = await api.user.getCurrentUser();
 
-  if (user?.firstName === "admin" && user.lastName === "admin") {
+  if (user?.userType === 'ADMIN') {
     redirect("/admin/dashboard");
   } else redirect("client");
 }
