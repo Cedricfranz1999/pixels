@@ -35,21 +35,34 @@ model User {
 }
 
 model Product {
-    id        Int      @id @default(autoincrement())
-    name      String
-    image     String?
-    brand     String?
-    size      Size
-    color     String?
-    category  ProductCategory
-    stocks    String
-    price     Float
-    orders    Order[]
+    id          Int      @id @default(autoincrement())
+    name        String
+    image       String?
+    brand       String?
+    size        Size
+    color       String?
+    stocks      String
+    price       Float
+    categoryId  Int     @unique
+
+    category    ProductCategory @relation(fields: [categoryId], references: [id])
+    orders      Order[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@index([name])
+}
+
+model ProductCategory {
+    id          Int         @id @default(autoincrement())
+    key         String
+    name        String
+
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+
+    product     Product?
 }
 
 // this is for adding in cart
@@ -156,29 +169,4 @@ model Message {
 
   sender      User? @relation("Sender", fields: [senderId], references: [id])
   recipient   User? @relation("Recipient", fields: [recipientId], references: [id])
-}
-
-
-enum ProductCategory {
-    JERSEY
-    V_NECK
-    POLO
-    TANK_TOP
-    ROUND_NECK
-    CREW_NECK
-    LONG_SLEEVE
-    RAGLAN
-    HENLEY
-    SLIM_FIT
-    OVERSIZED
-    BASKETBALL_SHORTS
-    RUNNING_SHORTS
-    CARGO_SHORTS
-    DENIM_SHORTS
-    BOARD_SHORTS
-    GYM_SHORTS
-    CHINO_SHORTS
-    SWEAT_SHORTS
-    SWIM_TRUNKS
-    SKATE_SHORTS
 }
