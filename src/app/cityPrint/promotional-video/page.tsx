@@ -57,14 +57,14 @@ const FacebookVideoPlayer: React.FC<FacebookVideoPlayerProps> = ({
   );
 };
 
-const Page: React.FC = () => {
+const VideoPromotion: React.FC = () => {
   const [showMessage, setShowMessage] = useState(true);
 
   useEffect(() => {
     // Hide message and show videos after 2 seconds
     const timer = setTimeout(() => {
       setShowMessage(false);
-    }, 3000);
+    }, 10);
 
     // Cleanup timer on component unmount
     return () => clearTimeout(timer);
@@ -74,7 +74,7 @@ const Page: React.FC = () => {
     "https://www.facebook.com/105238368947001/videos/1472395256540198",
     "https://www.facebook.com/105238368947001/videos/470486624893639",
     "https://www.facebook.com/105238368947001/videos/428202419357868",
-    "https://www.facebook.com/reel/410044494810380",
+    "https://www.facebook.com/105238368947001/videos/1472395256540198",
   ];
 
   return (
@@ -86,7 +86,7 @@ const Page: React.FC = () => {
           </Label>
         </div>
       ) : (
-        <div className="flex flex-col gap-10">
+        <div className="mt-10 flex flex-col gap-10">
           <div className="flex w-full items-center justify-center">
             <Label className="mt-14 animate-bounce items-center text-4xl font-extrabold tracking-widest text-blue-500">
               Watch and Enjoy
@@ -105,4 +105,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default Page;
+export default VideoPromotion;

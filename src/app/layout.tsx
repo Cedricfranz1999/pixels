@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
+        <body className="bg-gradient-to-r from-[#efeff0] via-[#efd9d2] to-[#e9ebf4]">
           <TRPCReactProvider>{children}</TRPCReactProvider>
           <Toaster />
         </body>
