@@ -18,6 +18,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "~/components/ui/carousel";
+import { Trash } from "lucide-react";
 declare global {
   interface Window {
     showSaveFilePicker?: (
@@ -38,9 +39,28 @@ declare global {
 }
 
 const Page = () => {
-  const { data, refetch } = api.client_design.getAllDeisgn.useQuery();
-  const [id, setId] = useState<number>();
-  const { toast } = useToast();
+    const [id, setId] = useState<number>();
+
+    const { toast } = useToast();
+
+    const { data, refetch } = api.client_design.getAllDeisgn.useQuery();
+    const { mutateAsync } = api.client_design.deleteDesign.useMutation({
+        onSuccess: () => {
+            toast({
+              title: "SUCCESS",
+              description: "Design successfully deleted",
+            });
+            void refetch();
+          },
+          onError: () => {
+            void refetch();
+            toast({
+              title: "ERROR",
+              description: "Server Error",
+              variant: "destructive",
+            });
+          },
+    })
 
   const handleDownload = async (imageUrl: string, filename: string) => {
     try {
@@ -76,6 +96,12 @@ const Page = () => {
     } catch (error) {}
   };
 
+  const handleDeleteDesign = async (id: number) => {
+    await mutateAsync({
+        id: id
+    })
+  }
+  
   return (
     <div className="flex h-screen w-full flex-col gap-10">
       <div className="flex w-full justify-between">
@@ -97,16 +123,23 @@ const Page = () => {
               <Label className="rounded-sm bg-orange-500 p-5 font-bold text-white">
                 {data.description}
               </Label>
-              <Label
+              <div
                 className={`${
                   id === data.id ? "" : "hidden"
-                } absolute right-0 top-0  cursor-pointer rounded-sm bg-blue-300 p-2 font-bold text-white hover:brightness-110`}
-                onClick={() =>
-                  handleDownload(data.image, `design-${data.id}.jpg`)
-                }
+                } absolute right-0 top-0 flex gap-3`}
               >
-                Download
-              </Label>
+                <Label className=" cursor-pointer rounded-sm bg-blue-300 p-2 font-bold text-white hover:brightness-110"
+                    onClick={() =>
+                        handleDownload(data.image, `design-${data.id}.jpg`)
+                }>
+                        Download
+                </Label>
+                <Trash 
+                    className="cursor-pointer rounded-sm bg-red-400 p-2 font-bold text-[#232b2b] hover:brightness-110" 
+                    size={30}
+                    onClick={() => handleDeleteDesign(data.id)}
+                />
+              </div>
             </Card>
           );
         })}
