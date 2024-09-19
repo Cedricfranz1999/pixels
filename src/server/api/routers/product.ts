@@ -18,7 +18,7 @@ export const productRouter = createTRPCRouter({
     .input(
       z.object({
         search: z.string().optional(),
-        category: z.string().optional(),
+        category: z.number().optional(),
         size: z.string().optional(),
       }),
     )
@@ -27,7 +27,7 @@ export const productRouter = createTRPCRouter({
       const where: any = {};
 
       if (category) {
-        where.category = category;
+        where.categoryId = category;
       }
 
       if (size) {
