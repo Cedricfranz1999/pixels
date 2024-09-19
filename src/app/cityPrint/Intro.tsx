@@ -18,7 +18,7 @@ const Intro = () => {
   };
   return (
     <>
-      <div className=" mt-32 flex w-full items-center">
+      <div className=" mt-32 flex w-full items-center" id="intro">
         <div className=" w-1/2 ">
           <div className=" flex items-center">
             <Label className=" text-6xl  font-extrabold  tracking-wider">

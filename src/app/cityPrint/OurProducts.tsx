@@ -11,6 +11,7 @@ import { type Product } from "~/types/product";
 import DirectOrder from "../_components/client/direct-order/form";
 import AddToCartForm from "../_components/client/cart/form";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const CATEGORYIES = [
   { value: "", label: "ALL" },
@@ -46,6 +47,8 @@ const OurProducts = ({
   refetchCartItems,
   refetchOrderedItems,
 }: ProductProps) => {
+  const router = useRouter();
+
   const [indexTag, setIndex] = useState<number | null>();
   const [searchKey, setSearchKey] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<any>();
@@ -54,13 +57,13 @@ const OurProducts = ({
   const [item, setItem] = useState<Product | null>(null);
   const [orderItem, setOrderItem] = useState<Product | null>(null);
 
-  const user = useUser()
+  const user = useUser();
 
   const { data, refetch } = api.client_products.getAllProducts.useQuery({
     category: categoryFilter === "ALL" ? "" : categoryFilter,
     search: searchKey,
   });
-
+  const { data: userLogin } = api.user.getUserLogin.useQuery();
 
   // search
   const onSearch = async (value: string) => {
@@ -75,17 +78,27 @@ const OurProducts = ({
   };
 
   const handleAddToCart = (item: Product) => {
+    if (!userLogin) {
+      router.push("/sign-in");
+    } else if (userLogin?.userType === "ADMIN") {
+      router.push("/admin/dashboard");
+    }
     setIsAddToCartOpen(true);
     setItem(item);
   };
 
   const handleDirectOrder = (item: Product) => {
+    if (!userLogin) {
+      router.push("/sign-in");
+    } else if (userLogin?.userType === "ADMIN") {
+      router.push("/admin/dashboard");
+    }
     setIsDirectOrderOpen(true);
     setOrderItem(item);
   };
 
   return (
-    <div className=" flex flex-col gap-10">
+    <div className=" flex flex-col gap-10" id="otherProducts">
       <div className=" my-20 flex items-center justify-center">
         <Label id="1" className="  text-4xl font-semibold   tracking-widest ">
           Our Clothing Product{" "}
