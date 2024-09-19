@@ -42,7 +42,7 @@ const size = [
 
 const Products = () => {
     const [searchKey, setSearchKey] = useState("");
-    const [categoryFilter, setCategoryFilter] = useState<any>();
+    const [categoryFilter, setCategoryFilter] = useState<number>();
     const [sizeFilter, setSizeFilter] = useState<any>();
     const [product, setProduct] = useState<Product | null>(null);
     const [open, setOpen] = useState(false);
@@ -50,7 +50,7 @@ const Products = () => {
     const { data: categories } = api.category.getAllCategories.useQuery()
 
     const { data, isLoading, refetch } = api.product.getAllProducts.useQuery({
-        category: categoryFilter === "ALL" ? "" : categoryFilter,
+        category: categoryFilter,
         search: searchKey,
         size: sizeFilter === "ALL" ? "" : sizeFilter,
     });
@@ -169,8 +169,8 @@ const Products = () => {
                   {categories?.map((category, index) => (
                     <DropdownMenuCheckboxItem
                       key={index}
-                      onClick={() => onCategoryFilter(category)}
-                      checked={categoryFilter == category}
+                      onClick={() => onCategoryFilter(category.id)}
+                      checked={categoryFilter == category.id}
                     >
                       {category.key}
                     </DropdownMenuCheckboxItem>

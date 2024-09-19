@@ -7,15 +7,15 @@ export const client_ProductRouter = createTRPCRouter({
     .input(
       z.object({
         search: z.string().optional(),
-        category: z.string().optional(),
+        category: z.number().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { search, category } = input;
+      const { search } = input;
       const where: any = {};
 
-      if (category) {
-        where.category = category;
+      if (input.category) {
+        where.categoryId = input.category;
       }
 
       if (search) {
@@ -35,14 +35,15 @@ export const client_ProductRouter = createTRPCRouter({
       return await ctx.db.product.findMany({
         where,
         include: {
-          orders: {
-            where: {
-              status: "ORDERED",
+            category: true,
+            orders: {
+                where: {
+                status: "ORDERED",
+                },
+                select: {
+                quantity: true,
+                },
             },
-            select: {
-              quantity: true,
-            },
-          },
         },
       });
     }),
