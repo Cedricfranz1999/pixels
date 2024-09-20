@@ -25,7 +25,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
   const [item, setItem] = useState<Product | null>(null);
   const [orderItem, setOrderItem] = useState<Product | null>(null);
 
-  const { data: categories } = api.category.getAllCategories.useQuery()
+  const { data: categories } = api.category.getAllCategories.useQuery();
 
   const { data, refetch } = api.client_products.getAllProducts.useQuery({
     category: categoryFilter,
@@ -56,7 +56,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
 
   return (
     <div className="flex  w-full gap-3    px-3 ">
-      <Card className="    max-h-[1000px]  min-h-[1000px]  overflow-scroll  bg-blue-50 px-2 ">
+      <Card className="    max-h-[1000px]   min-h-[1000px] min-w-72  overflow-scroll  bg-blue-50 px-2 ">
         <Input
           placeholder="Search Products"
           className=" mb-10 mt-4 border  border-solid border-orange-500"
@@ -85,7 +85,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
           })}
         </RadioGroup>
       </Card>
-      <Card className="   min-h-[1000px]w-full  max-h-[1000px]  overflow-scroll bg-blue-50   py-20">
+      <Card className="   max-h-[1000px] min-h-[1000px]  min-w-full  overflow-scroll bg-blue-50   py-20">
         <div className="grid grid-cols-4 gap-10">
           {data?.map((product: Product, index) => {
             const totalOrders = product.orders
