@@ -26,6 +26,6 @@ export default async function Home() {
 
     if (user?.userType === "ADMIN") {
       redirect("/admin/dashboard");
-    } else redirect("client");
+    } else redirect("/client/cart");
   } else redirect("/sign-in");
 }
