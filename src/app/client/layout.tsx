@@ -4,7 +4,7 @@ import HeaderClient from "../_components/layout/header-client";
 import SidebarBarClients from "../_components/layoutClient/sidebar";
 import { api } from "~/trpc/react";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+const CLientLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { data: user } = api.user.getUserLogin.useQuery();
 
@@ -30,4 +30,4 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default AdminLayout;
+export default CLientLayout;

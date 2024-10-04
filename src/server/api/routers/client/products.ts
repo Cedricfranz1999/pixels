@@ -47,4 +47,63 @@ export const client_ProductRouter = createTRPCRouter({
         },
       });
     }),
+
+    getAllOrderedProduct: publicProcedure
+    .input(
+        z.object({
+          search: z.string().optional(),
+          status: z.any(),
+        }),
+      )
+      .query(async ({ ctx, input }) => {
+        const { search, status } = input;
+        const userId = ctx.auth.userId;
+        const order = await ctx.db.checkout.findMany({
+          where: {
+            userId,
+            AND: [
+              {
+                status: status ? status : undefined,
+                OR: [
+                  {
+                    order: {
+                      some: {
+                        product: {
+                          name: {
+                            contains: search,
+                            mode: "insensitive",
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          include: {
+            order: {
+              include: { product: true },
+            },
+          },
+        });
+  
+        const data = order.map((data) => {
+          const totalAmount = data.order
+            .map((order) => order.product.price * order.quantity)
+            .reduce((acc, curr) => acc + curr, 0);
+  
+          return {
+            id: data.id,
+            name: data.order.map((order) => order.product.name),
+            price: data.order.map((price) => price.product.price),
+            quantity: data.order.map((order) => order.quantity),
+            totalAmount,
+            proofOfPayment: data.proofOfPayment,
+            deliveryDate: data.deliveryDate,
+            status: data.status,
+          };
+        });
+        return data;
+      }),
 });
