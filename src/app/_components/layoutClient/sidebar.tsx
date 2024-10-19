@@ -31,6 +31,11 @@ const links = [
     title: "Editor",
     to: "/client/Editor",
   },
+  {
+    icon: BarChart2Icon,
+    title: "My Orders",
+    to: "/client/my-orders",
+  },
 ];
 
 const SidebarBarClients = () => {

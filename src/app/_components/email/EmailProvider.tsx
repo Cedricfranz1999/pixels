@@ -21,10 +21,6 @@ const EmailProvider = () => {
   const [editing, setEditing] = useState<boolean>(false);
   const [isUploadfile, setIsUploadFile] = useState<boolean>(true);
 
-  console.log("====================================");
-  console.log(image);
-  console.log("====================================");
-
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

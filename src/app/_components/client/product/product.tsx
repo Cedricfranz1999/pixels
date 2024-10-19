@@ -11,31 +11,6 @@ import { type Product } from "~/types/product";
 import AddToCartForm from "../cart/form";
 import DirectOrder from "../direct-order/form";
 
-const CATEGORYIES = [
-  { value: "", label: "ALL" },
-  { value: "JERSEY", label: "Jersey" },
-  { value: "V_NECK", label: "V-Neck" },
-  { value: "POLO", label: "Polo" },
-  { value: "TANK_TOP", label: "Tank Top" },
-  { value: "ROUND_NECK", label: "Round Neck" },
-  { value: "CREW_NECK", label: "Crew Neck" },
-  { value: "LONG_SLEEVE", label: "Long Sleeve" },
-  { value: "RAGLAN", label: "Raglan" },
-  { value: "HENLEY", label: "Henley" },
-  { value: "SLIM_FIT", label: "Slim Fit" },
-  { value: "OVERSIZED", label: "Oversized" },
-  { value: "BASKETBALL_SHORTS", label: "Basketball Shorts" },
-  { value: "RUNNING_SHORTS", label: "Running Shorts" },
-  { value: "CARGO_SHORTS", label: "Cargo Shorts" },
-  { value: "DENIM_SHORTS", label: "Denim Shorts" },
-  { value: "BOARD_SHORTS", label: "Board Shorts" },
-  { value: "GYM_SHORTS", label: "Gym Shorts" },
-  { value: "CHINO_SHORTS", label: "Chino Shorts" },
-  { value: "SWEAT_SHORTS", label: "Sweat Shorts" },
-  { value: "SWIM_TRUNKS", label: "Swim Trunks" },
-  { value: "SKATE_SHORTS", label: "Skate Shorts" },
-];
-
 type ProductProps = {
   refetchCartItems?: () => void;
   refetchOrderedItems?: () => void;
@@ -44,14 +19,16 @@ type ProductProps = {
 const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
   const [indexTag, setIndex] = useState<number | null>();
   const [searchKey, setSearchKey] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<any>();
+  const [categoryFilter, setCategoryFilter] = useState<number>();
   const [isAddToCartOpen, setIsAddToCartOpen] = useState<boolean>(false);
   const [isDirectOrderOpen, setIsDirectOrderOpen] = useState<boolean>(false);
   const [item, setItem] = useState<Product | null>(null);
   const [orderItem, setOrderItem] = useState<Product | null>(null);
 
+  const { data: categories } = api.category.getAllCategories.useQuery();
+
   const { data, refetch } = api.client_products.getAllProducts.useQuery({
-    category: categoryFilter === "ALL" ? "" : categoryFilter,
+    category: categoryFilter,
     search: searchKey,
   });
 
@@ -62,8 +39,8 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
   };
 
   // category filter
-  const onCategoryFilter = async (value: any) => {
-    setCategoryFilter(value);
+  const onCategoryFilter = async (value: string) => {
+    setCategoryFilter(parseInt(value));
     await refetch();
   };
 
@@ -79,7 +56,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
 
   return (
     <div className="flex  w-full gap-3    px-3 ">
-      <Card className="    max-h-[1000px]  min-h-[1000px]  overflow-scroll  bg-blue-50 px-2 ">
+      <Card className="    max-h-[1000px]   min-h-[1000px] min-w-72  overflow-scroll  bg-blue-50 px-2 ">
         <Input
           placeholder="Search Products"
           className=" mb-10 mt-4 border  border-solid border-orange-500"
@@ -93,22 +70,22 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
           defaultValue="ALL"
           onValueChange={onCategoryFilter}
         >
-          {CATEGORYIES.map((data, index) => {
+          {categories?.map((data, index) => {
             return (
               <div
                 className="my-2 flex  flex-col items-start justify-center font-bold  text-blue-400"
                 key={index}
               >
                 <div className=" flex items-center justify-center gap-2">
-                  <RadioGroupItem value={data.value} className="" />
-                  <Label htmlFor={data.value}>{data.label}</Label>
+                  <RadioGroupItem value={String(data.id)} className="" />
+                  <Label htmlFor={data.key}>{data.key}</Label>
                 </div>
               </div>
             );
           })}
         </RadioGroup>
       </Card>
-      <Card className="   min-h-[1000px]w-full  max-h-[1000px]  overflow-scroll bg-blue-50   py-20">
+      <Card className="   max-h-[1000px] min-h-[1000px]  min-w-full  overflow-scroll bg-blue-50   py-20">
         <div className="grid grid-cols-4 gap-10">
           {data?.map((product: Product, index) => {
             const totalOrders = product.orders

@@ -54,7 +54,7 @@ const FeedbackGrid = () => {
   ];
   return (
     <>
-      <div className=" flex w-full items-center justify-center">
+      <div className=" flex w-full items-center justify-center  " id="feedback">
         <Label
           id="1"
           className="   mt-20 text-4xl font-semibold   tracking-widest "

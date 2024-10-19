@@ -1,7 +1,19 @@
+"use client";
+import { useRouter } from "next/navigation";
 import HeaderClient from "../_components/layout/header-client";
 import SidebarBarClients from "../_components/layoutClient/sidebar";
+import { api } from "~/trpc/react";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+const CLientLayout = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+  const { data: user } = api.user.getUserLogin.useQuery();
+
+  if (!user) {
+    router.push("/sign-in");
+  } else if (user.userType === "ADMIN") {
+    router.push("/admin/dashboard");
+  }
+
   return (
     <div className="relative grid min-h-screen min-w-full bg-muted/40 lg:grid-cols-[280px_1fr]">
       <SidebarBarClients />
@@ -18,4 +30,4 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default AdminLayout;
+export default CLientLayout;

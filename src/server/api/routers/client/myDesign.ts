@@ -28,4 +28,18 @@ export const client_myDesignRouter = createTRPCRouter({
         },
       });
     }),
+
+    deleteDesign: publicProcedure
+    .input(
+      z.object({
+        id: z.number()
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.design.delete({
+        where: {
+            id: input.id
+        }
+      });
+    }),
 });

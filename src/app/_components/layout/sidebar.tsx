@@ -7,6 +7,7 @@ import {
   Handshake,
   Home,
   Notebook,
+  Settings,
   Shirt,
 } from "lucide-react";
 import Link from "next/link";
@@ -39,9 +40,9 @@ const links = [
     to: "/admin/walk-in",
   },
   {
-    icon: FolderClosedIcon,
-    title: "Projects",
-    to: "/admin/projects",
+    icon: Settings,
+    title: "Settings",
+    to: "/admin/settings",
   },
 ];
 
@@ -52,7 +53,8 @@ const SidebarClient = () => {
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <Link href={"/"} className="flex items-center gap-2 font-semibold">
-            <img alt="logo" className="h-7" />
+            <img alt="logo" width={70} src="/logo.png" />
+            <span>City Print</span>
           </Link>
         </div>
         <div className="flex-1">

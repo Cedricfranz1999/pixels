@@ -15,9 +15,9 @@ const page = () => {
       <div className="   bg-cover px-20">
         <Header />
         <Intro />
+        <SampleDesign />
         <Offer />
         <Service />
-        <SampleDesign />
         <OurProducts />
         <FeedbackGrid />
         <UpdateCard />

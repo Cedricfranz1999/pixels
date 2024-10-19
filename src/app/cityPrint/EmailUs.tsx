@@ -6,7 +6,7 @@ import { Label } from "~/components/ui/label";
 
 const UpdateCard = () => {
   return (
-    <div className="my-32 flex justify-center">
+    <div className="my-32 flex justify-center" id="update">
       <Card className="flex w-[1300px] flex-col items-center gap-3 rounded-md bg-blue-400 px-32 py-10">
         <Label
           className="tracking-thight text-3xl text-white"

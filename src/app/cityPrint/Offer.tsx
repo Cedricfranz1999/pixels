@@ -4,7 +4,7 @@ import { Label } from "~/components/ui/label";
 
 const Offer = () => {
   return (
-    <div className="    mt-48 flex w-full items-center">
+    <div className="    mt-48 flex w-full items-center" id="offer">
       <div className=" flex w-3/4 flex-col gap-5">
         <Label className=" text-4xl font-semibold   tracking-widest ">
           we cater to all skillsets

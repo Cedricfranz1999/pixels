@@ -7,6 +7,9 @@ export type Product = {
   color: string | null;
   stocks: string;
   price: number;
-  category: string;
+  category: {
+    id: number
+    name: string
+  }
   orders?: any;
 };

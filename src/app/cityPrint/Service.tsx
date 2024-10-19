@@ -8,6 +8,7 @@ const Service = () => {
     <div
       className="    mt-48 flex w-full items-center  gap-24 px-10
   "
+      id="services"
     >
       <Card className="  flex w-full flex-col items-center justify-center gap-7 border-2 border-black bg-[#fdfcfc] p-4 px-7">
         <LayoutDashboard
