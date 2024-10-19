@@ -41,10 +41,7 @@ const FacebookVideoPlayer: React.FC<FacebookVideoPlayerProps> = ({
   const isReel = videoUrl.includes("/reel/");
 
   return (
-    <div
-      className="facebook-video"
-      style={{ position: "relative", width: "100%", height: "100%" }}
-    >
+    <div className="facebook-video h-full w-full">
       <div
         className={isReel ? "fb-post" : "fb-video"}
         data-href={videoUrl}
@@ -92,9 +89,13 @@ const VideoPromotion: React.FC = () => {
               Watch and Enjoy
             </Label>
           </div>
-          <div className="flex w-full items-center gap-10">
+          <div className="grid w-full grid-cols-1 items-center justify-center gap-10 px-4 md:grid-cols-2 lg:grid-cols-4">
             {videoUrls.map((videoUrl, index) => (
-              <div key={index} style={{ width: "400px", position: "relative" }}>
+              <div
+                key={index}
+                className="relative h-auto w-full"
+                style={{ maxWidth: "400px" }}
+              >
                 <FacebookVideoPlayer videoUrl={videoUrl} />
               </div>
             ))}
