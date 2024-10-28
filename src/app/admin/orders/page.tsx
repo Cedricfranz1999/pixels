@@ -25,6 +25,7 @@ import dayjs from "dayjs";
 import { Button } from "~/components/ui/button";
 import { Dot, ListFilter, MoreHorizontal } from "lucide-react";
 import { debounce } from "lodash";
+import * as XLSX from "xlsx";
 
 interface DataTable {
   id: number;
@@ -103,6 +104,38 @@ const Checkouts = () => {
       status: value as any,
     });
   };
+  const exportToExcel = () => {
+    if (!notArchiveData || notArchiveData.length === 0) {
+      toast({
+        title: "Error",
+        description: "No data available to export",
+      });
+      return;
+    }
+
+    // Prepare the data for export
+    const exportData = notArchiveData.map((item) => ({
+      Customer: item.customer,
+      ProductNames: item.name.join(", "),
+      Prices: item.price.join(", "),
+      Quantities: item.quantity.join(", "),
+      TotalAmount: item.totalAmount,
+      DeliveryDate: dayjs(item.deliveryDate).format("YYYY-MM-DD"),
+      Status: item.status,
+    }));
+
+    // Create a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+
+    // Export the workbook to an Excel file
+    XLSX.writeFile(workbook, `Orders_${dayjs().format("YYYY-MM-DD")}.xlsx`);
+  };
 
   useEffect(() => {
     setSearchKey("");
@@ -142,7 +175,7 @@ const Checkouts = () => {
                 placeholder="Search..."
               />
             </div>
-            <div className="flex flex-row gap-2 ">
+            <div className="flex flex-row items-center justify-center  gap-2 ">
               {!isArchive ? (
                 <>
                   <div className="ml-auto flex items-center gap-2">
@@ -198,6 +231,9 @@ const Checkouts = () => {
                   Go back
                 </Button>
               )}
+              <Button onClick={() => exportToExcel()} size={"sm"}>
+                Export Order Reports
+              </Button>
             </div>
           </div>
         </CardHeader>

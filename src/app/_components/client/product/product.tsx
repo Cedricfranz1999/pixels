@@ -55,38 +55,40 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
   };
 
   return (
-    <div className="flex  w-full gap-3    px-3 ">
-      <Card className="    max-h-[1000px]   min-h-[1000px] min-w-72  overflow-scroll  bg-blue-50 px-2 ">
+    <div className="flex flex-col gap-6 px-3 md:flex-row">
+      <Card className="w-full overflow-scroll bg-blue-50 px-4 py-6 md:max-h-[800px] md:w-auto md:min-w-[250px] md:max-w-[300px]">
         <Input
           placeholder="Search Products"
-          className=" mb-10 mt-4 border  border-solid border-orange-500"
+          className="mb-6 border border-solid border-orange-500"
           value={searchKey}
           onChange={(e) => onSearch(e.target.value)}
           type="text"
         />
-
-        <RadioGroup
-          className=""
-          defaultValue="ALL"
-          onValueChange={onCategoryFilter}
-        >
-          {categories?.map((data, index) => {
-            return (
-              <div
-                className="my-2 flex  flex-col items-start justify-center font-bold  text-blue-400"
-                key={index}
-              >
-                <div className=" flex items-center justify-center gap-2">
-                  <RadioGroupItem value={String(data.id)} className="" />
-                  <Label htmlFor={data.key}>{data.key}</Label>
-                </div>
+        <RadioGroup defaultValue="ALL" onValueChange={onCategoryFilter}>
+          {categories?.map((data, index) => (
+            <div
+              className="my-2 flex flex-col items-start justify-center font-bold text-blue-400"
+              key={index}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <RadioGroupItem value={String(data.id)} />
+                <Label htmlFor={data.key}>{data.key}</Label>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </RadioGroup>
       </Card>
-      <Card className="   max-h-[1000px] min-h-[1000px]  min-w-full  overflow-scroll bg-blue-50   py-20">
-        <div className="grid grid-cols-4 gap-10">
+
+      <Card className="w-full overflow-scroll bg-blue-50 py-6">
+        <div
+          className={`grid gap-10 ${
+            data?.length === 1
+              ? "grid-cols-1"
+              : data?.length === 2
+                ? "grid-cols-1 sm:grid-cols-2"
+                : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+          }`}
+        >
           {data?.map((product: Product, index) => {
             const totalOrders = product.orders
               .map((order: any) => order.quantity)
@@ -95,15 +97,17 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
             return (
               <div
                 key={index}
-                className=" relative flex flex-col items-center  gap-5  "
+                className="relative flex flex-col items-center gap-5 rounded-lg border border-gray-200 p-4 shadow-sm transition-transform duration-200 hover:scale-105 hover:shadow-lg"
                 onMouseEnter={() => setIndex(index)}
                 onMouseLeave={() => setIndex(null)}
               >
                 <div
-                  className={` absolute bottom-20 flex items-start justify-center gap-5  ${index === indexTag ? "" : "hidden"} `}
+                  className={`absolute bottom-16 flex items-start justify-center gap-3 ${
+                    index === indexTag ? "block" : "hidden"
+                  }`}
                 >
                   <Button
-                    className=" bg-yellow-600"
+                    className="bg-yellow-600 text-white"
                     onClick={() => handleAddToCart(product)}
                   >
                     <span className="flex gap-2">
@@ -112,7 +116,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
                     </span>
                   </Button>
                   <Button
-                    className=" bg-orange-600"
+                    className="bg-orange-600 text-white"
                     onClick={() => handleDirectOrder(product)}
                   >
                     Order Now
@@ -120,16 +124,17 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
                 </div>
                 <img
                   src={product.image ? product.image : "/tshit1.png"}
-                  className=" rounded-lg"
-                  width={300}
+                  alt={product.name}
+                  className="h-48 w-full max-w-xs rounded-lg object-contain"
                 />
-                <div className=" flex flex-col gap-3">
-                  <Label className=" semi-bold  text-lg tracking-widest">
+
+                <div className="flex flex-col gap-2 text-center">
+                  <Label className="text-lg font-semibold tracking-wider">
                     {product.name}
                   </Label>
-                  <div className=" flex items-center justify-between   gap-3  px-16    font-medium">
+                  <div className="flex items-center justify-between gap-3 font-medium">
                     <Label>Price: Php {product.price}</Label>
-                    <Label>| {totalOrders} sold </Label>
+                    <Label>| {totalOrders} sold</Label>
                   </div>
                 </div>
               </div>
@@ -137,6 +142,7 @@ const Product = ({ refetchCartItems, refetchOrderedItems }: ProductProps) => {
           })}
         </div>
       </Card>
+
       <AddToCartForm
         open={isAddToCartOpen}
         setOpen={setIsAddToCartOpen}

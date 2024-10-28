@@ -3,7 +3,6 @@ import React, { useState, useRef } from "react";
 import FileInput from "./file-input";
 import FileImage from "./file-image";
 import { Editor } from "@pixlrlte/pixlr-sdk";
-import { userAgent } from "next/server";
 import { Label } from "~/components/ui/label";
 
 interface PixelEditorProps {
@@ -20,10 +19,6 @@ const PixelPage: React.FC<PixelEditorProps> = ({ token }) => {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [editor, setEditor] = useState<Editor | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
-  console.log("====================================");
-  console.log(editor);
-  console.log("====================================");
 
   const filesChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -71,6 +66,19 @@ const PixelPage: React.FC<PixelEditorProps> = ({ token }) => {
     }
   };
 
+  // Trigger file download
+  const handleDownload = () => {
+    const openFile = currentFiles.find((file) => file.open);
+    if (openFile) {
+      const url = URL.createObjectURL(openFile.file);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = openFile.file.name; // Set the download name to the original file name
+      a.click();
+      URL.revokeObjectURL(url); // Clean up the URL object
+    }
+  };
+
   console.log("CURRENTFILES ", currentFiles);
 
   return (
@@ -100,12 +108,14 @@ const PixelPage: React.FC<PixelEditorProps> = ({ token }) => {
           </div>
         </div>
       )}
-      {/* //customize save */}
+      {/* Customize save and download functionality */}
       <div
-        className={`   absolute  right-[220px] top-[110px]  z-50 flex  h-8 w-40 cursor-pointer items-center  justify-center   rounded-md  border-2  border-[#9c9b9b] bg-orange-500 shadow-lg drop-shadow-md hover:brightness-150 ${currentFiles[0]?.open === true ? "" : "hidden"}`}
-        onClick={() => console.log("hello")}
+        className={`absolute  right-14 top-[110px] z-50 flex h-8 w-40 cursor-pointer items-center justify-center rounded-md border-2 border-[#9c9b9b] bg-orange-500 shadow-lg drop-shadow-md hover:brightness-150 ${
+          currentFiles[0]?.open === true ? "" : "hidden"
+        }`}
+        onClick={handleDownload} // Trigger download on click
       >
-        <Label className=" cursor-pointer   font-semibold text-white">
+        <Label className="cursor-pointer font-semibold text-white">
           SAVE CHANGES
         </Label>
       </div>
@@ -113,7 +123,9 @@ const PixelPage: React.FC<PixelEditorProps> = ({ token }) => {
       <iframe
         src={`https://pixlr.com/editor/?token=${token}`}
         ref={frameRef}
-        className={`border-tiffany-blue relative h-screen w-full  border-2 ${currentFiles[0]?.open === true ? "" : "hidden"}  `}
+        className={`border-tiffany-blue relative h-screen w-full border-2 ${
+          currentFiles[0]?.open === true ? "" : "hidden"
+        }`}
       />
     </section>
   );
