@@ -16,6 +16,23 @@ export const client_CartsRouter = createTRPCRouter({
     });
   }),
 
+  cancelCartedItems: publicProcedure
+    .input(
+        z.object({
+            id: z.number()
+        })
+    )  
+    .mutation(async ({ ctx, input}) => {
+        return await ctx.db.order.update({
+            where: {
+                id: input.id
+            },
+            data: {
+                status: 'CANCELED'
+            }
+        })
+  }),
+
   addToCart: publicProcedure
     .input(
       z.object({
@@ -37,16 +54,14 @@ export const client_CartsRouter = createTRPCRouter({
   deleteCartedItems: publicProcedure
     .input(
       z.object({
-        orderIds: z.array(z.number()),
+        id: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await Promise.all(
-        input.orderIds.map(async (id) => {
-          await ctx.db.order.delete({
-            where: { id },
-          });
-        }),
-      );
+      return await ctx.db.order.delete({
+        where: {
+            id: input.id
+        }
+      })
     }),
 });

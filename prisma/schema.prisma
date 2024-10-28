@@ -139,11 +139,13 @@ model Design {
 
 enum CartStatus {
     CARTED
+    CANCELED
     ORDERED
 }
 
 enum CheckoutStaus {
     PENDING
+    CANCELED
     APPROVED
     DELIVERY
     DONE

@@ -8,6 +8,9 @@ export const client_CheckoutRouter = createTRPCRouter({
     return ctx.db.checkout.findMany({
       where: {
         userId,
+        status: {
+            in: ['APPROVED', 'DELIVERY', 'PENDING'],
+        },
       },
       include: {
         order: {
@@ -54,6 +57,46 @@ export const client_CheckoutRouter = createTRPCRouter({
       );
 
       return checkout;
+    }),
+
+  cancelCheckout: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.checkout.update({
+        where: {
+            id: input.id
+        },
+        data: {
+            status: 'CANCELED'
+        },
+      });
+    }),
+
+  backToCart: publicProcedure
+    .input(
+        z.object({
+            id: z.number(),
+            orderId: z.number()
+        }),
+    )
+    .mutation(async ({ ctx, input }) => {
+        await ctx.db.order.update({
+            where: {
+                id: input.orderId
+            },
+            data: {
+                status: 'CARTED'
+            }
+        })
+        return await ctx.db.checkout.delete({
+            where: {
+                id: input.id
+            },
+        });
     }),
 
   directOrder: publicProcedure
