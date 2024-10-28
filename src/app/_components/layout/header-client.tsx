@@ -58,7 +58,6 @@ const HeaderClient = () => {
               <Label className="   text-white-300  cursor-pointer bg-red-400  px-2 py-1">
                 {cartedItems?.length}
               </Label>
-              111
             </div>{" "}
             <div className=" flex cursor-pointer items-center justify-center gap-1 ">
               <Bell />

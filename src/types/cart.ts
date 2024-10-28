@@ -1,6 +1,7 @@
 export type Cart = {
   id: number;
   quantity: number;
+  createdAt: Date
   product: {
     id: number;
     name: string;
