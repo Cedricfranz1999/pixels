@@ -192,12 +192,21 @@ const CityPrintLandingPage = () => {
                 {item.label}
               </Label>
             ))}
-            <button
-              onClick={() => router.push("/sign-in")}
-              className="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700"
-            >
-              Sign In
-            </button>
+            <div className=" mt-7 flex flex-col gap-2">
+              <button
+                onClick={() => router.push("/sign-in")}
+                className="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              >
+                Sign In
+              </button>
+              <p
+                className=" cursor-pointer text-xs text-blue-500 underline hover:text-blue-600 "
+                onClick={() => router.push("sign-up")}
+              >
+                {" "}
+                click here Signup{" "}
+              </p>
+            </div>
           </nav>
           <Button
             className="md:hidden"

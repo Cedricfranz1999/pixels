@@ -16,7 +16,7 @@ const Carts = () => {
   const [checkedItems, setCheckedItems] = useState<Cart[]>([]);
   const [checkoutModalOpen, setCheckoutModalOpen] = useState<boolean>(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const { data, refetch } = api.client_carts.getAllCartedItems.useQuery();
 
@@ -71,16 +71,14 @@ const Carts = () => {
   };
 
   const handleDeleteCart = async (id: number) => {
-
     await deleteCart.mutateAsync({
       id,
     });
   };
 
   const handleCancelCart = async (id: number) => {
-
     await cancelCart.mutateAsync({
-        id,
+      id,
     });
   };
 
@@ -91,7 +89,9 @@ const Carts = () => {
           <div className="flex flex-col gap-2">
             <Label className=" text-xl font-bold">Carted Items</Label>
             <Label className=" italic">List of all carted items</Label>
-            <p className="text-red-500 font-semibold">Items beyond 30 minutes after carted cannot be canceled or delete.</p>
+            <p className="font-semibold text-red-500">
+              Items beyond 30 minutes after carted cannot be canceled or delete.
+            </p>
           </div>
           <div className="flex justify-end">
             {checkedItems.length > 0 && (
@@ -101,62 +101,72 @@ const Carts = () => {
             )}
           </div>
         </div>
-        {data && data?.length < 1 && 
-            <div className="pt-10 flex mx-auto items-center justify-center">
-                <Card className="w-1/3 h-1/3">
-                    <CardContent className="items-center justify-center flex flex-col pt-5 space-y-3">
-                        <OctagonAlert size={100} className="text-red-600"/>
-                        <p className="text-sm">Nothing to see here.</p>
-                        <p className="text-sm italic font-bold">Order items in our store.</p>
-                        <Button onClick={() => router.push('/client')}>Order now!</Button>
-                    </CardContent>
-                </Card>
-            </div>
-        }
+        {data && data?.length < 1 && (
+          <div className="mx-auto flex items-center justify-center pt-10">
+            <Card className="h-1/3 w-1/3">
+              <CardContent className="flex flex-col items-center justify-center space-y-3 pt-5">
+                <OctagonAlert size={100} className="text-red-600" />
+                <p className="text-sm">Nothing to see here.</p>
+                <p className="text-sm font-bold italic">
+                  Order items in our store.
+                </p>
+                <Button onClick={() => router.push("/client")}>
+                  Order now!
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
         <div className="my-5 grid grid-cols-2 gap-5 lg:grid-cols-4">
           {data?.map((cart, index: number) => {
             const isChecked = checkedItems.some((item) => item.id === cart.id);
             const createdAt = new Date(cart.createdAt);
             const now = new Date();
-        
-            const minutesDifference = (now.getTime() - createdAt.getTime()) / 60000; 
-            const isDisabled = minutesDifference > 30;
+
             return (
               <Card key={index}>
                 <CardHeader>
-                    <Checkbox
-                        checked={isChecked}
-                        onCheckedChange={() => handleCheckboxChange(cart)}
-                    />
+                  <Checkbox
+                    checked={isChecked}
+                    onCheckedChange={() => handleCheckboxChange(cart)}
+                  />
                 </CardHeader>
                 <CardContent>
-                    <div className="relative flex flex-col gap-1">
-                        <img
-                            alt="image"
-                            src={
-                                cart.product.image ? cart.product.image : "/tshit1.png"
-                            }
-                            className=" w-full rounded-lg"
-                        />
-                        <div className="flex flex-col gap-1">
-                            <Label className=" text-base font-semibold italic">
-                                {cart.product.name}
-                            </Label>
-                            <div className=" grid text-sm italic md:grid-cols-2">
-                                <p>Price: Php {cart.product.price}</p>
-                                <p>Size: {cart.product.size}</p>
-                                <p>Brand: {cart.product.brand}</p>
-                                <p>Color: {cart.product.color}</p>
-                                <p>Quantity: {cart.quantity}</p>
-                            </div>
-                            <div className="w-full flex justify-end gap-3">
-                                <Button className="h-9" disabled={isDisabled} onClick={() => handleCancelCart(cart.id)}>Cancel</Button>
-                                <Button onClick={() => handleDeleteCart(cart.id)} variant={"destructive"} disabled={isDisabled}>
-                                    Delete
-                                </Button>
-                            </div>
-                        </div>
+                  <div className="relative flex flex-col gap-1">
+                    <img
+                      alt="image"
+                      src={
+                        cart.product.image ? cart.product.image : "/tshit1.png"
+                      }
+                      className=" w-full rounded-lg"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <Label className=" text-base font-semibold italic">
+                        {cart.product.name}
+                      </Label>
+                      <div className=" grid text-sm italic md:grid-cols-2">
+                        <p>Price: Php {cart.product.price}</p>
+                        <p>Size: {cart.product.size}</p>
+                        <p>Brand: {cart.product.brand}</p>
+                        <p>Color: {cart.product.color}</p>
+                        <p>Quantity: {cart.quantity}</p>
+                      </div>
+                      <div className="flex w-full justify-end gap-3">
+                        <Button
+                          className="h-9"
+                          onClick={() => handleCancelCart(cart.id)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteCart(cart.id)}
+                          variant={"destructive"}
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </div>
+                  </div>
                 </CardContent>
               </Card>
             );

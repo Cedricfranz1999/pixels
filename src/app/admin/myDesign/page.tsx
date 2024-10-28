@@ -44,8 +44,11 @@ const Page = () => {
   const { toast } = useToast();
 
   const { data, refetch } = api.client_design.getAllDeisgn.useQuery({
-    isAdmin: false,
+    isAdmin: true,
   });
+
+  console.log("DATA", data);
+
   const { mutateAsync } = api.client_design.deleteDesign.useMutation({
     onSuccess: () => {
       toast({

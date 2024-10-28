@@ -40,7 +40,7 @@ interface PropsData {
 }
 
 const MyDesignOption: React.FC<PropsData> = ({ setImage }) => {
-  const { data, refetch } = api.client_design.getAllDeisgn.useQuery();
+  const { data, refetch } = api.client_design.getAllDeisgn.useQuery({});
   const [id, setId] = useState<number>();
   const { toast } = useToast();
 

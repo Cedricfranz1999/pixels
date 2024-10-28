@@ -9,6 +9,7 @@ import {
   Notebook,
   Settings,
   Shirt,
+  User2,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
@@ -24,10 +25,15 @@ const links = [
     title: "Products",
     to: "/admin/products",
   },
+  // {
+  //   icon: Handshake,
+  //   title: "Offers",
+  //   to: "/admin/offers",
+  // },
   {
-    icon: Handshake,
-    title: "Offers",
-    to: "/admin/offers",
+    icon: Shirt,
+    title: "Plain T-Shirt",
+    to: "/admin/myDesign",
   },
   {
     icon: Notebook,
@@ -35,7 +41,7 @@ const links = [
     to: "/admin/orders",
   },
   {
-    icon: Shirt,
+    icon: User2,
     title: "Walk Ins",
     to: "/admin/walk-in",
   },

@@ -59,13 +59,13 @@ const HeaderClient = () => {
                 {cartedItems?.length}
               </Label>
             </div>{" "}
-            <div className=" flex cursor-pointer items-center justify-center gap-1 ">
+            {/* <div className=" flex cursor-pointer items-center justify-center gap-1 ">
               <Bell />
               <Label className=" cursor-pointer font-bold ">Notification</Label>
               <Label className="   text-white-300  cursor-pointer bg-red-400  px-2 py-1">
                 5
               </Label>
-            </div>{" "}
+            </div>{" "} */}
             <div className="  mx-1011 flex items-center gap-3">
               <MessengerCustomer />
 

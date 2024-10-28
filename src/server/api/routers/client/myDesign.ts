@@ -3,14 +3,24 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const client_myDesignRouter = createTRPCRouter({
-  getAllDeisgn: publicProcedure.query(async ({ ctx }) => {
-    const userId = ctx.auth.userId;
-    return ctx.db.design.findMany({
-      where: {
-        userId,
-      },
-    });
-  }),
+  getAllDeisgn: publicProcedure
+    .input(
+      z.object({
+        isAdmin: z.boolean().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      console.log("ZZZZ", input.isAdmin);
+
+      const userId = ctx.auth.userId;
+      return ctx.db.design.findMany({
+        where: {
+          OR: input.isAdmin
+            ? [{ userId, user: { userType: "ADMIN" } }]
+            : [{ userId }, { user: { userType: "ADMIN" } }],
+        },
+      });
+    }),
 
   AddDesign: publicProcedure
     .input(
@@ -29,17 +39,17 @@ export const client_myDesignRouter = createTRPCRouter({
       });
     }),
 
-    deleteDesign: publicProcedure
+  deleteDesign: publicProcedure
     .input(
       z.object({
-        id: z.number()
+        id: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.design.delete({
         where: {
-            id: input.id
-        }
+          id: input.id,
+        },
       });
     }),
 });
