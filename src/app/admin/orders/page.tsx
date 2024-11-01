@@ -26,6 +26,8 @@ import { Button } from "~/components/ui/button";
 import { Dot, ListFilter, MoreHorizontal } from "lucide-react";
 import { debounce } from "lodash";
 import * as XLSX from "xlsx";
+import { useUser } from "@clerk/nextjs";
+import html2canvas from "html2canvas";
 
 interface DataTable {
   id: number;
@@ -37,6 +39,7 @@ interface DataTable {
   deliveryDate: Date;
   status: any;
   customer: string;
+  email?: string;
 }
 
 const Checkouts = () => {
@@ -45,6 +48,7 @@ const Checkouts = () => {
   const [isArchive, setIsArchive] = useState(false);
   const [data, setData] = useState<DataTable[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const user = useUser();
 
   const {
     data: notArchiveData,
@@ -153,6 +157,87 @@ const Checkouts = () => {
     isNotArchiveLoading,
     notArchiveData,
   ]);
+  console.log("DATA", notArchiveData);
+  const handleGenerateReceiptImage = (checkout: DataTable) => {
+    const receiptElement = document.createElement("div");
+    receiptElement.innerHTML = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #000;">
+      <h2 style="text-align: center; font-weight: 800;">CITYPRINT</h2>
+      <h2 style="text-align: center; font-weight: 800;">OFFICIAL RECEIPT</h2>
+
+      <div style="display: flex; justify-content: space-between;">
+        <span>ID NO: ${checkout.id}</span>
+        <span>DATE: ${dayjs().format("MMMM D, YYYY")}</span>
+          </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>FULLNAME: ${checkout.customer}</span>
+        <span>PHONE: ${user.user?.phoneNumbers}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>ADDRESS: Pajarito St.Brgy Central Calbayog City</span>
+        <span>EMAIL: ${checkout.email}</span>
+      </div>
+    
+      <h3 style="margin-top: 20px;">ITEMS</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px ; margin-bottom: 20px">
+          <thead>
+            <tr>
+              <th style="border: 1px solid #000; padding: 8px;">ITEM</th>
+              <th style="border: 1px solid #000; padding: 8px;">QUANTITY</th>
+              <th style="border: 1px solid #000; padding: 8px;">PRICE</th>
+              <th style="border: 1px solid #000; padding: 8px;">TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${checkout.name
+              .map(
+                (name, index) => `
+              <tr>
+                <td style="border: 1px solid #000; padding: 8px;">${name}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${checkout.quantity[index]}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${checkout.price[index]}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${checkout.totalAmount}</td>
+              </tr>
+            `,
+              )
+              .join("")}
+          </tbody>
+        </table>
+          <h3>PAYMENT INFORMATION</h3>
+      <div style="display: flex; justify-content: space-between;">
+        <span>DOWNPAYMENT:__________________________________</span>
+        <span>AMOUNT PAID: __________________________________</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>PAYMENT METHOD: __________________________________</span>
+        <span>BALANCE DUE: __________________________________</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>CUSTOMER SIGNATURE: __________________________________</span>
+        <span>CITY PRINT REPRESENTATIVE: __________________________________</span>
+      </div>
+        
+       <div style="margin-top: 40px; display: flex; justify-content: space-between;">
+        <span>CUSTOMER SIGNATURE:PAJARITO BALUD , BRGY CENTRAL ,CALBYOG CITY</span>
+        <span>CITYPRINT REPRESENTATIVE:09959727750</span>
+        <span>CITYPRINT REPRESENTATIVE:cityprint2022@gmail.com</span>
+
+        
+      </div>
+    </div>
+  `;
+
+    document.body.appendChild(receiptElement);
+
+    html2canvas(receiptElement).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = `receipt_${checkout.id}.png`;
+      link.click();
+      document.body.removeChild(receiptElement);
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -254,6 +339,7 @@ const Checkouts = () => {
                   <TableHead>Status</TableHead>
                   {!isArchive && <TableHead>Actions</TableHead>}
                 </TableRow>
+                <TableHead>Order slipt</TableHead>
               </TableHeader>
               <TableBody>
                 {data?.length ? (
@@ -354,6 +440,13 @@ const Checkouts = () => {
                           </DropdownMenu>
                         </TableCell>
                       )}
+                      <TableCell>
+                        <Button
+                          onClick={() => handleGenerateReceiptImage(checkout)}
+                        >
+                          Generate Receipt
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (

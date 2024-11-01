@@ -80,6 +80,7 @@ export const ordersRouter = createTRPCRouter({
           deliveryDate: data.deliveryDate,
           status: data.status,
           customer: `${data.user.firstname} ${data.user.lastname}`,
+          email: `${data.user.email}`,
         };
       });
       return data;

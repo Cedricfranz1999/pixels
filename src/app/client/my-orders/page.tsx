@@ -18,13 +18,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { api } from "~/trpc/react";
 import dayjs from "dayjs";
 import { Button } from "~/components/ui/button";
 import { Dot, ListFilter } from "lucide-react";
 import { debounce } from "lodash";
-import * as XLSX from "xlsx";
+import html2canvas from "html2canvas"; // Make sure to install this library
 import { useUser } from "@clerk/nextjs";
 
 interface DataTable {
@@ -78,23 +78,85 @@ const Checkouts = () => {
     setData(orderData);
   }, [isOrderDataLoading, orderData]);
 
-  const handleGenerateExcel = (data: DataTable[]) => {
-    // ADD HEADER FOR EXCEL
-    const worksheet = XLSX.utils.json_to_sheet(
-      data.map((checkout) => ({
-        CityPrint: `- Order Slipt`,
-        CustomerName: `${user.user?.firstName} ${user.user?.lastName}`,
-        "Product Names": checkout.name.join(", "),
-        Prices: checkout.price.map((p) => `Php: ${p}`).join(", "),
-        Quantities: checkout.quantity.join(", "),
-        "Total Amount": checkout.totalAmount,
-        "Delivery Date": dayjs(checkout.deliveryDate).format("YYYY-MM-DD"),
-        Status: checkout.status,
-      })),
-    );
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
-    XLSX.writeFile(workbook, "Orders.xlsx");
+  const handleGenerateReceiptImage = (checkout: DataTable) => {
+    const receiptElement = document.createElement("div");
+    receiptElement.innerHTML = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #000;">
+      <h2 style="text-align: center; font-weight: 800;">CITYPRINT</h2>
+      <h2 style="text-align: center; font-weight: 800;">OFFICIAL RECEIPT</h2>
+
+      <div style="display: flex; justify-content: space-between;">
+        <span>ID NO: ${checkout.id}</span>
+        <span>DATE: ${dayjs().format("MMMM D, YYYY")}</span>
+          </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>FULLNAME: ${user.user?.firstName} ${user.user?.lastName}</span>
+        <span>PHONE: ${user.user?.phoneNumbers}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>ADDRESS: Pajarito St.Brgy Central Calbayog City</span>
+        <span>EMAIL: ${user.user?.emailAddresses}</span>
+      </div>
+    
+      <h3 style="margin-top: 20px;">ITEMS</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px ; margin-bottom: 20px">
+          <thead>
+            <tr>
+              <th style="border: 1px solid #000; padding: 8px;">ITEM</th>
+              <th style="border: 1px solid #000; padding: 8px;">QUANTITY</th>
+              <th style="border: 1px solid #000; padding: 8px;">PRICE</th>
+              <th style="border: 1px solid #000; padding: 8px;">TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${checkout.name
+              .map(
+                (name, index) => `
+              <tr>
+                <td style="border: 1px solid #000; padding: 8px;">${name}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${checkout.quantity[index]}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${checkout.price[index]}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${checkout.totalAmount}</td>
+              </tr>
+            `,
+              )
+              .join("")}
+          </tbody>
+        </table>
+          <h3>PAYMENT INFORMATION</h3>
+      <div style="display: flex; justify-content: space-between;">
+        <span>DOWNPAYMENT:__________________________________</span>
+        <span>AMOUNT PAID: __________________________________</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>PAYMENT METHOD: __________________________________</span>
+        <span>BALANCE DUE: __________________________________</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>CUSTOMER SIGNATURE: __________________________________</span>
+        <span>CITY PRINT REPRESENTATIVE: __________________________________</span>
+      </div>
+        
+       <div style="margin-top: 40px; display: flex; justify-content: space-between;">
+        <span>CUSTOMER SIGNATURE:PAJARITO BALUD , BRGY CENTRAL ,CALBYOG CITY</span>
+        <span>CITYPRINT REPRESENTATIVE:09959727750</span>
+        <span>CITYPRINT REPRESENTATIVE:cityprint2022@gmail.com</span>
+
+        
+      </div>
+    </div>
+  `;
+
+    document.body.appendChild(receiptElement);
+
+    html2canvas(receiptElement).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = `receipt_${checkout.id}.png`;
+      link.click();
+      document.body.removeChild(receiptElement);
+    });
   };
 
   return (
@@ -191,50 +253,47 @@ const Checkouts = () => {
                       <TableCell className="font-medium">
                         <div className="flex flex-col gap-3">
                           {checkout.name.map((name, i) => (
-                            <div key={i} className="flex gap-0.5">
-                              <Dot />
-                              <p>{name}</p>
+                            <div key={i} className="flex items-center gap-0.5">
+                              <Dot className="h-4 w-4 text-primary" />
+                              <span>{name}</span>
                             </div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="font-medium">
-                        <div className="flex flex-col gap-3">
-                          {checkout.price.map((price, i) => (
-                            <div key={i} className="flex gap-0.5">
-                              <Dot />
-                              <p>Php: {price}</p>
-                            </div>
-                          ))}
-                        </div>
+                      <TableCell>
+                        {checkout.price.map((price, i) => (
+                          <span key={i}>₱{price}</span>
+                        ))}
                       </TableCell>
-                      <TableCell className="font-medium">
-                        <div className="flex flex-col gap-3">
-                          {checkout.quantity.map((quantity, i) => (
-                            <p key={i}>{quantity} pcs</p>
-                          ))}
-                        </div>
+                      <TableCell>
+                        {checkout.quantity.map((quantity, i) => (
+                          <span key={i}>{quantity}</span>
+                        ))}
                       </TableCell>
-                      <TableCell className="font-medium">
-                        {checkout.totalAmount}
+                      <TableCell>
+                        <span>₱{checkout.totalAmount}</span>
                       </TableCell>
-                      <TableCell className="font-medium">
-                        {dayjs(checkout.deliveryDate).format("YYYY-MM-DD")}
+                      <TableCell>
+                        <span>
+                          {dayjs(checkout.deliveryDate).format("YYYY-MM-DD")}
+                        </span>
                       </TableCell>
-                      <TableCell className="font-medium">
-                        {checkout.status}
+                      <TableCell>
+                        <span>{checkout.status}</span>
                       </TableCell>
-                      <TableCell className="font-medium">
-                        <Button onClick={() => handleGenerateExcel([checkout])}>
-                          Generate
+                      <TableCell>
+                        <Button
+                          onClick={() => handleGenerateReceiptImage(checkout)}
+                        >
+                          Generate Receipt
                         </Button>
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={8} className="py-10 text-center">
-                      No orders found
+                    <TableCell colSpan={7} className="text-center">
+                      No data found.
                     </TableCell>
                   </TableRow>
                 )}
