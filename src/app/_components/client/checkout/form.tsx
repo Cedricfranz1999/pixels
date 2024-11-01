@@ -262,7 +262,7 @@ const CheckoutItem = ({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-right">
-                            Price per 1pc:
+                            Price per 1pc:sdds
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Quantity" {...field} disabled />
@@ -308,7 +308,7 @@ const CheckoutItem = ({
                 </>
               );
             })}
-            <Label>Total Price: Php {totalPrice}</Label>
+            <Label>Total Price: Php {isNaN(totalPrice) ? 0 : totalPrice}</Label>
             <DialogFooter className="mt-4">
               <Button
                 onClick={() => handleOpenChange()}

@@ -60,7 +60,7 @@ const SidebarClient = () => {
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <Link href={"/"} className="flex items-center gap-2 font-semibold">
             <img alt="logo" width={70} src="/logo.png" />
-            <span>City Print</span>
+            <span>CityPrint</span>
           </Link>
         </div>
         <div className="flex-1">

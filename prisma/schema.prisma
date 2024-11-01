@@ -35,7 +35,7 @@ model User {
 }
 
 model Product {
-    id          Int      @id @default(autoincrement())
+    id          Int             @id @default(autoincrement())
     name        String
     image       String?
     brand       String?
@@ -43,13 +43,13 @@ model Product {
     color       String?
     stocks      String
     price       Float
-    categoryId  Int     @unique
+    categoryId  Int
 
     category    ProductCategory @relation(fields: [categoryId], references: [id])
     orders      Order[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
     @@index([name])
 }
@@ -62,8 +62,9 @@ model ProductCategory {
     createdAt   DateTime    @default(now())
     updatedAt   DateTime    @updatedAt
 
-    product     Product?
+    products    Product[]  
 }
+
 
 // this is for adding in cart
 model Order {

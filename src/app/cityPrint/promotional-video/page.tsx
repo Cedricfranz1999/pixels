@@ -79,7 +79,7 @@ const VideoPromotion: React.FC = () => {
       {showMessage ? (
         <div className="flex h-screen w-full items-center justify-center">
           <Label className="animate-bounce text-6xl font-extrabold tracking-widest text-orange-500">
-            CITY PRINT ENTERPRISE....
+            CITYPRINT ENTERPRISE....
           </Label>
         </div>
       ) : (

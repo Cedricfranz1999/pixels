@@ -54,7 +54,7 @@ const PopoverAddDesign = () => {
           className=" bg-orange-500 font-bold text-white  hover:bg-orange-600"
           variant="outline"
         >
-          Add Design
+          Add custom design
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[400px]">

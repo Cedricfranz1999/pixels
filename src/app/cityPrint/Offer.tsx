@@ -15,9 +15,9 @@ const Offer = () => {
           team is here to assist you every step of the way, from design to
           delivery. We offer a variety of printing techniques to suit your
           specific needs, ensuring your designs are showcased at their best.
-          Choose City Print for your printing needs and experience the perfect
+          Choose CityPrint for your printing needs and experience the perfect
           blend of quality, creativity, and reliability. Whether it's for
-          personal use, business, or special events, City Print is your go-to
+          personal use, business, or special events, CityPrint is your go-to
           destination for all your custom printing projects.
         </Label>
       </div>

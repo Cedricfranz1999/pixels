@@ -15,13 +15,13 @@ const UpdateCard = () => {
           Get Our Updates
         </Label>
         <Label className="leading-6 text-white">
-          Stay updated with City Print's latest news and exclusive offers! By
+          Stay updated with CityPrint's latest news and exclusive offers! By
           subscribing, you'll receive early access to our newest T-shirt designs
           and custom clothing services. Our newsletters include special
           discounts, upcoming events, and behind-the-scenes insights into our
           design process. Join our community of fashion enthusiasts and never
           miss out on our latest creations. We promise to keep you inspired and
-          informed. Subscribe now and be part of the City Print family!
+          informed. Subscribe now and be part of the CityPrint family!
         </Label>
         <div className="flex w-full items-center gap-2">
           <Input

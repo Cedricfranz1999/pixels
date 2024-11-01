@@ -35,8 +35,8 @@ const Service = () => {
           Perfect Fit for Every Size
         </Label>
         <Label className=" text-xs leading-5  text-white">
-          At City Print, we offer a wide range of sizes to ensure the perfect
-          fit for everyone. Customize your apparel to match your exact size
+          At CityPrint, we offer a wide range of sizes to ensure the perfect fit
+          for everyone. Customize your apparel to match your exact size
           requirements, from XS to 5XL and beyond. Our commitment to quality
           ensures that every piece fits comfortably and looks great, no matter
           the size.

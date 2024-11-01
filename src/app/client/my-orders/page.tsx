@@ -24,6 +24,8 @@ import dayjs from "dayjs";
 import { Button } from "~/components/ui/button";
 import { Dot, ListFilter } from "lucide-react";
 import { debounce } from "lodash";
+import * as XLSX from "xlsx";
+import { useUser } from "@clerk/nextjs";
 
 interface DataTable {
   id: number;
@@ -41,6 +43,8 @@ const Checkouts = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [data, setData] = useState<DataTable[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const user = useUser();
+  console.log("USERDATA ", user);
 
   const {
     data: orderData,
@@ -51,22 +55,18 @@ const Checkouts = () => {
     status: statusFilter as any,
   });
 
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedRefetch = useCallback(
     debounce(() => {
-        void refetchNotArchive();
+      void refetchNotArchive();
     }, 2000),
     [],
   );
 
-  // search
   const onSearch = async (value: string) => {
     setSearchKey(value);
     debouncedRefetch();
   };
 
-  // status filter
   const onStatusFilter = async (value: string) => {
     setStatusFilter(value);
     debouncedRefetch();
@@ -75,11 +75,27 @@ const Checkouts = () => {
   useEffect(() => {
     setSearchKey("");
     setIsLoading(isOrderDataLoading);
-      setData(orderData);
-  }, [
-    isOrderDataLoading,
-    orderData,
-  ]);
+    setData(orderData);
+  }, [isOrderDataLoading, orderData]);
+
+  const handleGenerateExcel = (data: DataTable[]) => {
+    // ADD HEADER FOR EXCEL
+    const worksheet = XLSX.utils.json_to_sheet(
+      data.map((checkout) => ({
+        CityPrint: `- Order Slipt`,
+        CustomerName: `${user.user?.firstName} ${user.user?.lastName}`,
+        "Product Names": checkout.name.join(", "),
+        Prices: checkout.price.map((p) => `Php: ${p}`).join(", "),
+        Quantities: checkout.quantity.join(", "),
+        "Total Amount": checkout.totalAmount,
+        "Delivery Date": dayjs(checkout.deliveryDate).format("YYYY-MM-DD"),
+        Status: checkout.status,
+      })),
+    );
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+    XLSX.writeFile(workbook, "Orders.xlsx");
+  };
 
   return (
     <div className="space-y-6">
@@ -103,56 +119,52 @@ const Checkouts = () => {
               />
             </div>
             <div className="flex flex-row gap-2 ">
-                <div className="ml-auto flex items-center gap-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 gap-1"
-                        >
-                          <ListFilter className="h-3.5 w-3.5" />
-                          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                            Filter status
-                          </span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuCheckboxItem
-                          onClick={() => onStatusFilter("")}
-                          checked={statusFilter == ""}
-                        >
-                          ALL
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          onClick={() => onStatusFilter("PENDING")}
-                          checked={statusFilter == "PENDING"}
-                        >
-                          PENDING
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          onClick={() => onStatusFilter("APPROVED")}
-                          checked={statusFilter == "APPROVED"}
-                        >
-                          APPROVED
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          onClick={() => onStatusFilter("DELIVERY")}
-                          checked={statusFilter == "DELIVERY"}
-                        >
-                          ON DELIVERY
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          onClick={() => onStatusFilter("DONE")}
-                          checked={statusFilter == "DONE"}
-                        >
-                          DONE
-                        </DropdownMenuCheckboxItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+              <div className="ml-auto flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 gap-1">
+                      <ListFilter className="h-3.5 w-3.5" />
+                      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                        Filter status
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem
+                      onClick={() => onStatusFilter("")}
+                      checked={statusFilter === ""}
+                    >
+                      ALL
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      onClick={() => onStatusFilter("PENDING")}
+                      checked={statusFilter === "PENDING"}
+                    >
+                      PENDING
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      onClick={() => onStatusFilter("APPROVED")}
+                      checked={statusFilter === "APPROVED"}
+                    >
+                      APPROVED
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      onClick={() => onStatusFilter("DELIVERY")}
+                      checked={statusFilter === "DELIVERY"}
+                    >
+                      ON DELIVERY
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      onClick={() => onStatusFilter("DONE")}
+                      checked={statusFilter === "DONE"}
+                    >
+                      DONE
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -167,57 +179,55 @@ const Checkouts = () => {
                   <TableHead>Price</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Total amount</TableHead>
-                  <TableHead>Proof of payment</TableHead>
                   <TableHead>Delivery date</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Order slip</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data?.length ? (
-                  data?.map((checkout, index: number) => (
+                  data.map((checkout, index: number) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">
                         <div className="flex flex-col gap-3">
-                          {checkout.name.map((name, index) => {
-                            return (
-                              <div key={index} className="flex gap-0.5">
-                                <Dot />
-                                <p>{name}</p>
-                              </div>
-                            );
-                          })}
+                          {checkout.name.map((name, i) => (
+                            <div key={i} className="flex gap-0.5">
+                              <Dot />
+                              <p>{name}</p>
+                            </div>
+                          ))}
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">
                         <div className="flex flex-col gap-3">
-                          {checkout.price.map((price, index) => {
-                            return (
-                              <div key={index} className="flex gap-0.5">
-                                <Dot />
-                                <p>Php: {price}</p>
-                              </div>
-                            );
-                          })}
+                          {checkout.price.map((price, i) => (
+                            <div key={i} className="flex gap-0.5">
+                              <Dot />
+                              <p>Php: {price}</p>
+                            </div>
+                          ))}
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">
                         <div className="flex flex-col gap-3">
-                          {checkout.quantity.map((quantity, index) => {
-                            return <p key={index}>{quantity} pcs</p>;
-                          })}
+                          {checkout.quantity.map((quantity, i) => (
+                            <p key={i}>{quantity} pcs</p>
+                          ))}
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">
                         {checkout.totalAmount}
                       </TableCell>
                       <TableCell className="font-medium">
-                        {checkout.proofOfPayment}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {dayjs(checkout.deliveryDate).format(" YYYY-MM-DDT")}
+                        {dayjs(checkout.deliveryDate).format("YYYY-MM-DD")}
                       </TableCell>
                       <TableCell className="font-medium">
                         {checkout.status}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <Button onClick={() => handleGenerateExcel([checkout])}>
+                          Generate
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))

@@ -249,7 +249,7 @@ const Checkouts = () => {
                   <TableHead>Price</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Total amount</TableHead>
-                  <TableHead>Proof of payment</TableHead>
+                  {/* <TableHead>Proof of payment</TableHead> */}
                   <TableHead>Delivery date</TableHead>
                   <TableHead>Status</TableHead>
                   {!isArchive && <TableHead>Actions</TableHead>}
@@ -296,9 +296,9 @@ const Checkouts = () => {
                       <TableCell className="font-medium">
                         {checkout.totalAmount}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      {/* <TableCell className="font-medium">
                         {checkout.proofOfPayment}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell className="font-medium">
                         {dayjs(checkout.deliveryDate).format(" YYYY-MM-DDT")}
                       </TableCell>

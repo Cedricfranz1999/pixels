@@ -32,10 +32,10 @@ const OurProducts = ({
   const [item, setItem] = useState<Product | null>(null);
   const [orderItem, setOrderItem] = useState<Product | null>(null);
 
-  const { data: categories } = api.category.getAllCategories.useQuery()
+  const { data: categories } = api.category.getAllCategories.useQuery();
 
   const { data, refetch } = api.client_products.getAllProducts.useQuery({
-    category: categoryFilter ,
+    category: categoryFilter,
     search: searchKey,
   });
   const { data: userLogin } = api.user.getUserLogin.useQuery();

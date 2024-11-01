@@ -103,7 +103,7 @@ const DirectOrder = ({
 
   useEffect(() => {
     setTotalPrice(quantity * parseFloat(form.getValues("price")));
-    form.setValue("totalPrice", totalPrice);
+    form.setValue("totalPrice", isNaN(totalPrice) ? 0 : totalPrice);
   }, [quantity, form, totalPrice]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

@@ -16,7 +16,6 @@ interface User {
   updatedAt: Date;
 }
 export default async function Home() {
-  auth().protect();
   const { userId } = auth();
   let user: User | null = null;
 

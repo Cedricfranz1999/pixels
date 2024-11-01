@@ -96,11 +96,7 @@ const PixelPage: React.FC<PixelEditorProps> = ({ token }) => {
                   <FileImage file={file} />
                 </div>
               ) : (
-                <button
-                  key={i}
-                  onClick={() => openFile(file, i)}
-                  className="cursor-pointer bg-red-200"
-                >
+                <button key={i} onClick={() => openFile(file, i)}>
                   <FileImage file={file} />
                 </button>
               ),

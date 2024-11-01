@@ -7,7 +7,10 @@ import {
   Handshake,
   Home,
   Notebook,
+  Component,
   Shirt,
+  Edit,
+  ShoppingCart,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
@@ -16,24 +19,24 @@ import { Label } from "~/components/ui/label";
 import { Card } from "~/components/ui/card";
 const links = [
   {
-    icon: BarChart2Icon,
+    icon: Shirt,
     title: "Products",
     to: "/client",
   },
 
   {
-    icon: Shirt,
-    title: "Mydesign",
+    icon: Component,
+    title: "Tshirt Template",
     to: "/client/myDesign",
   },
   {
-    icon: Handshake,
-    title: "Editor",
+    icon: Edit,
+    title: "Create Your Own",
     to: "/client/Editor",
   },
   {
-    icon: BarChart2Icon,
-    title: "My Orders",
+    icon: ShoppingCart,
+    title: "Track orders",
     to: "/client/my-orders",
   },
 ];
@@ -47,7 +50,7 @@ const SidebarBarClients = () => {
           <Link href={"/"} className="flex items-center gap-2  font-semibold">
             <img src="/logo.png " width={100} height={100} />
             <Label className=" whitespace-nowrap pr-5 text-xs  font-bold  text-white ">
-              City Print Enterprises
+              CityPrint Enterprises
             </Label>
           </Link>
         </div>

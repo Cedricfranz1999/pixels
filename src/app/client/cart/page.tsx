@@ -89,9 +89,6 @@ const Carts = () => {
           <div className="flex flex-col gap-2">
             <Label className=" text-xl font-bold">Carted Items</Label>
             <Label className=" italic">List of all carted items</Label>
-            <p className="font-semibold text-red-500">
-              Items beyond 30 minutes after carted cannot be canceled or delete.
-            </p>
           </div>
           <div className="flex justify-end">
             {checkedItems.length > 0 && (
