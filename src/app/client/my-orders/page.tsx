@@ -82,6 +82,11 @@ const Checkouts = () => {
     const receiptElement = document.createElement("div");
     receiptElement.innerHTML = `
     <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #000;">
+
+      <span>
+        <img src="/logo.png" alt="CityPrint Logo" style="width: 100px; height: 100px;"/>
+      </span>
+    
       <h2 style="text-align: center; font-weight: 800;">CITYPRINT</h2>
       <h2 style="text-align: center; font-weight: 800;">OFFICIAL RECEIPT</h2>
 
