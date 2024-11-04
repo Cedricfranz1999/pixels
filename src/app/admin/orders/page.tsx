@@ -211,7 +211,7 @@ const Checkouts = () => {
               .join("")}
           </tbody>
         </table>
-          <h3>PAYMENT INFORMATION</h3>
+          <h3>ORDER INFORMATION</h3>
       <div style="display: flex; justify-content: space-between;">
         <span>DOWNPAYMENT:__________________________________</span>
         <span>AMOUNT PAID: __________________________________</span>
@@ -246,6 +246,84 @@ const Checkouts = () => {
       document.body.removeChild(receiptElement);
     });
   };
+const handlePrintSlip = (checkout: DataTable) => {
+  const printContent = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #000;">
+      <div style="text-align: center;">
+        <img src="/logo.png" alt="CityPrint Logo" style="width: 100px; height: 100px;"/>
+        <h2 style="font-weight: 800;">CITYPRINT</h2>
+        <h2 style="text-align: center; font-weight: 800;">OFFICIAL RECEIPT</h2>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>ID NO: ${checkout.id}</span>
+        <span>DATE: ${dayjs().format("MMMM D, YYYY")}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>FULLNAME: ${checkout.customer}</span>
+        <span>PHONE: ${user.user?.phoneNumbers}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>ADDRESS: Pajarito St.Brgy Central Calbayog City</span>
+        <span>EMAIL: ${checkout.email}</span>
+      </div>
+      <h3 style="margin-top: 20px;">ITEMS</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #000; padding: 8px;">ITEM</th>
+            <th style="border: 1px solid #000; padding: 8px;">QUANTITY</th>
+            <th style="border: 1px solid #000; padding: 8px;">PRICE</th>
+            <th style="border: 1px solid #000; padding: 8px;">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${checkout.name.map((name, index) => `
+            <tr>
+              <td style="border: 1px solid #000; padding: 8px;">${name}</td>
+              <td style="border: 1px solid #000; padding: 8px;">${checkout.quantity[index]}</td>
+              <td style="border: 1px solid #000; padding: 8px;">${checkout.price[index]}</td>
+              <td style="border: 1px solid #000; padding: 8px;">${checkout.totalAmount}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+      <h3>ORDER INFORMATION</h3>
+      <div style="display: flex; justify-content: space-between;">
+        <span>DOWNPAYMENT:__________________________________</span>
+        <span>AMOUNT PAID: __________________________________</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>ORDER METHOD: __________________________________</span>
+        <span>BALANCE DUE: __________________________________</span>
+      </div>
+      <div style="display: flex; justify-content: space-between;">
+        <span>CUSTOMER SIGNATURE: __________________________________</span>
+        <span>CITY PRINT REPRESENTATIVE: __________________________________</span>
+      </div>
+    </div>
+  `;
+
+  const printWindow = window.open("", "_blank");
+  if (printWindow) {
+    printWindow.document.open();
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Receipt</title>
+          <style>
+            /* Add any additional styles here */
+            body { font-family: Arial, sans-serif; }
+          </style>
+        </head>
+        <body onload="window.print(); window.close();">
+          ${printContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+};
+
+
 
   return (
     <div className="space-y-6">
@@ -449,11 +527,18 @@ const Checkouts = () => {
                         </TableCell>
                       )}
                       <TableCell>
+                        <div className=" items-center flex gap-3">
                         <Button
                           onClick={() => handleGenerateReceiptImage(checkout)}
                         >
-                          Generate Receipt
+                          Generate   Order Slip
                         </Button>
+                         <Button
+                          onClick={() => handlePrintSlip(checkout)}
+                        >
+                          Print Order  Slip
+                        </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))

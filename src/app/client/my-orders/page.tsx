@@ -128,7 +128,7 @@ const Checkouts = () => {
               .join("")}
           </tbody>
         </table>
-          <h3>PAYMENT INFORMATION</h3>
+          <h3>Order INFORMATION</h3>
       <div style="display: flex; justify-content: space-between;">
         <span>DOWNPAYMENT:__________________________________</span>
         <span>AMOUNT PAID: __________________________________</span>
@@ -164,6 +164,106 @@ const Checkouts = () => {
     });
   };
 
+  const handlePrintReceipt = (checkout: DataTable) => {
+  const printWindow = window.open("", "_blank") as Window;
+
+  const receiptContent = `
+    <html>
+      <head>
+        <title>Receipt</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+          }
+          .header,
+          .footer {
+            text-align: center;
+            font-weight: 800;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+          }
+          th, td {
+            border: 1px solid #000;
+            padding: 8px;
+          }
+          .info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <img src="/logo.png" alt="CityPrint Logo" style="width: 100px; height: 100px;"/>
+          <h2>CITYPRINT</h2>
+          <h3>OFFICIAL RECEIPT</h3>
+        </div>
+        <div class="info">
+          <span>ID NO: ${checkout.id}</span>
+          <span>DATE: ${dayjs().format("MMMM D, YYYY")}</span>
+        </div>
+        <div class="info">
+          <span>FULLNAME: ${user.user?.firstName} ${user.user?.lastName}</span>
+          <span>PHONE: ${user.user?.phoneNumbers}</span>
+        </div>
+        <div class="info">
+          <span>ADDRESS: Pajarito St. Brgy Central Calbayog City</span>
+          <span>EMAIL: ${user.user?.emailAddresses}</span>
+        </div>
+        <h3>ITEMS</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ITEM</th>
+              <th>QUANTITY</th>
+              <th>PRICE</th>
+              <th>TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${checkout.name
+              .map((name, index) => `
+                <tr>
+                  <td>${name}</td>
+                  <td>${checkout.quantity[index]}</td>
+                  <td>₱${checkout.price[index]}</td>
+                <td>₱${(checkout.price?.[index] ?? 0) * (checkout.quantity?.[index] ?? 0)}</td>
+                </tr>`)
+              .join("")}
+          </tbody>
+        </table>
+        <h3>Order
+         INFORMATION</h3>
+        <div class="info">
+          <span>DOWNPAYMENT: _____________</span>
+          <span>AMOUNT PAID: _____________</span>
+        </div>
+        <div class="info">
+          <span>PAYMENT METHOD: _____________</span>
+          <span>BALANCE DUE: _____________</span>
+        </div>
+        <div class="info">
+          <span>CUSTOMER SIGNATURE: _____________</span>
+          <span>CITY PRINT REPRESENTATIVE: _____________</span>
+        </div>
+        <div class="footer">
+          <p>Pajarito St. Brgy Central, Calbayog City | 09959727750 | cityprint2022@gmail.com</p>
+        </div>
+      </body>
+    </html>
+  `;
+
+  // Write content to the new window and print
+  printWindow.document.write(receiptContent);
+  printWindow.document.close();
+  printWindow.print();
+};
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -287,12 +387,19 @@ const Checkouts = () => {
                         <span>{checkout.status}</span>
                       </TableCell>
                       <TableCell>
+                      <div className=" flex  items-center justify-center gap-3">
                         <Button
                           onClick={() => handleGenerateReceiptImage(checkout)}
                         >
-                          Generate Receipt
+                          Generate Order Receipt
                         </Button>
+                       <Button onClick={() => handlePrintReceipt(checkout)}>
+                        Print Order Receipt
+                      </Button>
+                      </div>
                       </TableCell>
+ 
+                      
                     </TableRow>
                   ))
                 ) : (
