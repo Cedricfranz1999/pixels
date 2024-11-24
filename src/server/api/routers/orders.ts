@@ -63,6 +63,9 @@ export const ordersRouter = createTRPCRouter({
             include: { product: true },
           },
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
 
       const data = order.map((data) => {

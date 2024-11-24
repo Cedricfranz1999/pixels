@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -164,6 +164,26 @@ const CityPrintLandingPage = () => {
     },
   ];
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Images array
+  const cards = [
+    { id: 1, imgSrc: "/intro.png", alt: "Intro Image" },
+    ...Array.from({ length: 10 }, (_, i) => ({
+      id: i + 2,
+      imgSrc: `/jersey${i + 1}.jpeg`,
+      alt: `Jersey ${i + 1}`,
+    })),
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [cards.length]);
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
@@ -288,14 +308,27 @@ const CityPrintLandingPage = () => {
             </div>
           </div>
           <div className="w-full md:w-1/2 md:pl-8">
-            <Card className="bg-[#1F0F8B] p-4">
-              <img
-                src="/intro.png"
-                alt="Intro Image"
-                width={500}
-                height={500}
-              />
-            </Card>
+            <div className="relative mx-auto w-full max-w-4xl overflow-hidden">
+              {/* Carousel Wrapper */}
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              >
+                {cards.map((card) => (
+                  <div key={card.id} className="min-w-full">
+                    <div className="flex items-center justify-center p-4">
+                      <img
+                        className=" rounded-lg"
+                        src={card.imgSrc}
+                        alt={card.alt}
+                        width={600}
+                        height={600}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 

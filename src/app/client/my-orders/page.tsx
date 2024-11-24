@@ -78,9 +78,9 @@ const Checkouts = () => {
     setData(orderData);
   }, [isOrderDataLoading, orderData]);
 
-  const handleGenerateReceiptImage = (checkout: DataTable) => {
-    const receiptElement = document.createElement("div");
-    receiptElement.innerHTML = `
+  const handleGenerateSlipImage = (checkout: DataTable) => {
+    const SlipElement = document.createElement("div");
+    SlipElement.innerHTML = `
     <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #000;">
 
       <span>
@@ -88,7 +88,7 @@ const Checkouts = () => {
       </span>
     
       <h2 style="text-align: center; font-weight: 800;">CITYPRINT</h2>
-      <h2 style="text-align: center; font-weight: 800;">OFFICIAL RECEIPT</h2>
+      <h2 style="text-align: center; font-weight: 800;">OFFICIAL Slip</h2>
 
       <div style="display: flex; justify-content: space-between;">
         <span>ID NO: ${checkout.id}</span>
@@ -152,25 +152,25 @@ const Checkouts = () => {
     </div>
   `;
 
-    document.body.appendChild(receiptElement);
+    document.body.appendChild(SlipElement);
 
-    html2canvas(receiptElement).then((canvas) => {
+    html2canvas(SlipElement).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = imgData;
-      link.download = `receipt_${checkout.id}.png`;
+      link.download = `Slip_${checkout.id}.png`;
       link.click();
-      document.body.removeChild(receiptElement);
+      document.body.removeChild(SlipElement);
     });
   };
 
-  const handlePrintReceipt = (checkout: DataTable) => {
-  const printWindow = window.open("", "_blank") as Window;
+  const handlePrintSlip = (checkout: DataTable) => {
+    const printWindow = window.open("", "_blank") as Window;
 
-  const receiptContent = `
+    const SlipContent = `
     <html>
       <head>
-        <title>Receipt</title>
+        <title>Slip</title>
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -202,7 +202,7 @@ const Checkouts = () => {
         <div class="header">
           <img src="/logo.png" alt="CityPrint Logo" style="width: 100px; height: 100px;"/>
           <h2>CITYPRINT</h2>
-          <h3>OFFICIAL RECEIPT</h3>
+          <h3>OFFICIAL Slip</h3>
         </div>
         <div class="info">
           <span>ID NO: ${checkout.id}</span>
@@ -228,13 +228,15 @@ const Checkouts = () => {
           </thead>
           <tbody>
             ${checkout.name
-              .map((name, index) => `
+              .map(
+                (name, index) => `
                 <tr>
                   <td>${name}</td>
                   <td>${checkout.quantity[index]}</td>
                   <td>₱${checkout.price[index]}</td>
                 <td>₱${(checkout.price?.[index] ?? 0) * (checkout.quantity?.[index] ?? 0)}</td>
-                </tr>`)
+                </tr>`,
+              )
               .join("")}
           </tbody>
         </table>
@@ -259,11 +261,11 @@ const Checkouts = () => {
     </html>
   `;
 
-  // Write content to the new window and print
-  printWindow.document.write(receiptContent);
-  printWindow.document.close();
-  printWindow.print();
-};
+    // Write content to the new window and print
+    printWindow.document.write(SlipContent);
+    printWindow.document.close();
+    printWindow.print();
+  };
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -310,6 +312,18 @@ const Checkouts = () => {
                       checked={statusFilter === "PENDING"}
                     >
                       PENDING
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      onClick={() => onStatusFilter("PROCESS")}
+                      checked={statusFilter == "PROCESS"}
+                    >
+                      PROCESS
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      onClick={() => onStatusFilter("PICKUP")}
+                      checked={statusFilter == "PICKUP"}
+                    >
+                      PICKUP
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
                       onClick={() => onStatusFilter("APPROVED")}
@@ -387,19 +401,17 @@ const Checkouts = () => {
                         <span>{checkout.status}</span>
                       </TableCell>
                       <TableCell>
-                      <div className=" flex  items-center justify-center gap-3">
-                        <Button
-                          onClick={() => handleGenerateReceiptImage(checkout)}
-                        >
-                          Generate Order Receipt
-                        </Button>
-                       <Button onClick={() => handlePrintReceipt(checkout)}>
-                        Print Order Receipt
-                      </Button>
-                      </div>
+                        <div className=" flex  items-center justify-center gap-3">
+                          <Button
+                            onClick={() => handleGenerateSlipImage(checkout)}
+                          >
+                            Generate Order Slip
+                          </Button>
+                          <Button onClick={() => handlePrintSlip(checkout)}>
+                            Print Order Slip
+                          </Button>
+                        </div>
                       </TableCell>
- 
-                      
                     </TableRow>
                   ))
                 ) : (

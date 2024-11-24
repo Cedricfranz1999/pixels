@@ -146,6 +146,8 @@ enum CartStatus {
 
 enum CheckoutStaus {
     PENDING
+    PROCESS
+    PICKUP
     CANCELED
     APPROVED
     DELIVERY

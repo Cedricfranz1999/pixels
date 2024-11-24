@@ -246,8 +246,8 @@ const Checkouts = () => {
       document.body.removeChild(receiptElement);
     });
   };
-const handlePrintSlip = (checkout: DataTable) => {
-  const printContent = `
+  const handlePrintSlip = (checkout: DataTable) => {
+    const printContent = `
     <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #000;">
       <div style="text-align: center;">
         <img src="/logo.png" alt="CityPrint Logo" style="width: 100px; height: 100px;"/>
@@ -277,13 +277,17 @@ const handlePrintSlip = (checkout: DataTable) => {
           </tr>
         </thead>
         <tbody>
-          ${checkout.name.map((name, index) => `
+          ${checkout.name
+            .map(
+              (name, index) => `
             <tr>
               <td style="border: 1px solid #000; padding: 8px;">${name}</td>
               <td style="border: 1px solid #000; padding: 8px;">${checkout.quantity[index]}</td>
               <td style="border: 1px solid #000; padding: 8px;">${checkout.price[index]}</td>
               <td style="border: 1px solid #000; padding: 8px;">${checkout.totalAmount}</td>
-            </tr>`).join("")}
+            </tr>`,
+            )
+            .join("")}
         </tbody>
       </table>
       <h3>ORDER INFORMATION</h3>
@@ -302,10 +306,10 @@ const handlePrintSlip = (checkout: DataTable) => {
     </div>
   `;
 
-  const printWindow = window.open("", "_blank");
-  if (printWindow) {
-    printWindow.document.open();
-    printWindow.document.write(`
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(`
       <html>
         <head>
           <title>Print Receipt</title>
@@ -319,11 +323,9 @@ const handlePrintSlip = (checkout: DataTable) => {
         </body>
       </html>
     `);
-    printWindow.document.close();
-  }
-};
-
-
+      printWindow.document.close();
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -377,6 +379,19 @@ const handlePrintSlip = (checkout: DataTable) => {
                           checked={statusFilter == "PENDING"}
                         >
                           PENDING
+                        </DropdownMenuCheckboxItem>
+
+                        <DropdownMenuCheckboxItem
+                          onClick={() => onStatusFilter("PROCESS")}
+                          checked={statusFilter == "PROCESS"}
+                        >
+                          PROCESS
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          onClick={() => onStatusFilter("PICKUP")}
+                          checked={statusFilter == "PICKUP"}
+                        >
+                          PICKUP
                         </DropdownMenuCheckboxItem>
                         <DropdownMenuCheckboxItem
                           onClick={() => onStatusFilter("APPROVED")}
@@ -527,17 +542,15 @@ const handlePrintSlip = (checkout: DataTable) => {
                         </TableCell>
                       )}
                       <TableCell>
-                        <div className=" items-center flex gap-3">
-                        <Button
-                          onClick={() => handleGenerateReceiptImage(checkout)}
-                        >
-                          Generate   Order Slip
-                        </Button>
-                         <Button
-                          onClick={() => handlePrintSlip(checkout)}
-                        >
-                          Print Order  Slip
-                        </Button>
+                        <div className=" flex items-center gap-3">
+                          <Button
+                            onClick={() => handleGenerateReceiptImage(checkout)}
+                          >
+                            Generate Order Slip
+                          </Button>
+                          <Button onClick={() => handlePrintSlip(checkout)}>
+                            Print Order Slip
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
