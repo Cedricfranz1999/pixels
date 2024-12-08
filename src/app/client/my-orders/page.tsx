@@ -26,6 +26,7 @@ import { Dot, ListFilter } from "lucide-react";
 import { debounce } from "lodash";
 import html2canvas from "html2canvas"; // Make sure to install this library
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface DataTable {
   id: number;
@@ -36,9 +37,11 @@ interface DataTable {
   proofOfPayment: string | null;
   deliveryDate: Date;
   status: any;
+  productImage: any;
 }
 
 const Checkouts = () => {
+  const router = useRouter();
   const [searchKey, setSearchKey] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [data, setData] = useState<DataTable[] | undefined>(undefined);
@@ -337,14 +340,17 @@ const Checkouts = () => {
                     >
                       ON DELIVERY
                     </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
+                    {/* <DropdownMenuCheckboxItem
                       onClick={() => onStatusFilter("DONE")}
                       checked={statusFilter === "DONE"}
                     >
                       DONE
-                    </DropdownMenuCheckboxItem>
+                    </DropdownMenuCheckboxItem> */}
                   </DropdownMenuContent>
                 </DropdownMenu>
+                <Button onClick={() => router.push("/client/archiveOrder")}>
+                  Archive Order
+                </Button>
               </div>
             </div>
           </div>
@@ -356,11 +362,11 @@ const Checkouts = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Product Image</TableHead>
                   <TableHead>Product name</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Total amount</TableHead>
-                  <TableHead>Delivery date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Order slip</TableHead>
                 </TableRow>
@@ -369,6 +375,14 @@ const Checkouts = () => {
                 {data?.length ? (
                   data.map((checkout, index: number) => (
                     <TableRow key={index}>
+                      <TableCell>
+                        {" "}
+                        <img
+                          src={checkout.productImage}
+                          width={100}
+                          height={100}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">
                         <div className="flex flex-col gap-3">
                           {checkout.name.map((name, i) => (
@@ -392,16 +406,20 @@ const Checkouts = () => {
                       <TableCell>
                         <span>₱{checkout.totalAmount}</span>
                       </TableCell>
+
                       <TableCell>
-                        <span>
-                          {dayjs(checkout.deliveryDate).format("YYYY-MM-DD")}
+                        {statusFilter === "DONE"}
+                        <span
+                          className=" cursor-pointer font-bold text-blue-500 underline"
+                          onClick={() =>
+                            router.push(`/client/my-orders/${checkout.id}`)
+                          }
+                        >
+                          Order Status
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span>{checkout.status}</span>
-                      </TableCell>
-                      <TableCell>
-                        <div className=" flex  items-center justify-center gap-3">
+                        <div className=" flex  items-start justify-start gap-3">
                           <Button
                             onClick={() => handleGenerateSlipImage(checkout)}
                           >

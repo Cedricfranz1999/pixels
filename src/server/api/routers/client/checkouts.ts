@@ -9,7 +9,7 @@ export const client_CheckoutRouter = createTRPCRouter({
       where: {
         userId,
         status: {
-            in: ['APPROVED', 'DELIVERY', 'PENDING'],
+          in: ["APPROVED", "DELIVERY", "PENDING"],
         },
       },
       include: {
@@ -68,35 +68,35 @@ export const client_CheckoutRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.checkout.update({
         where: {
-            id: input.id
+          id: input.id,
         },
         data: {
-            status: 'CANCELED'
+          status: "CANCELED",
         },
       });
     }),
 
   backToCart: publicProcedure
     .input(
-        z.object({
-            id: z.number(),
-            orderId: z.number()
-        }),
+      z.object({
+        id: z.number(),
+        orderId: z.number(),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
-        await ctx.db.order.update({
-            where: {
-                id: input.orderId
-            },
-            data: {
-                status: 'CARTED'
-            }
-        })
-        return await ctx.db.checkout.delete({
-            where: {
-                id: input.id
-            },
-        });
+      await ctx.db.order.update({
+        where: {
+          id: input.orderId,
+        },
+        data: {
+          status: "CARTED",
+        },
+      });
+      return await ctx.db.checkout.delete({
+        where: {
+          id: input.id,
+        },
+      });
     }),
 
   directOrder: publicProcedure
@@ -136,5 +136,60 @@ export const client_CheckoutRouter = createTRPCRouter({
         });
 
       return checkout;
+    }),
+
+  orderAgain: publicProcedure
+    .input(
+      z.object({
+        productId: z.number(),
+        quantity: z.number(),
+        totalPrice: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.auth.userId;
+
+      // Create the order
+      const order = await ctx.db.order.create({
+        data: {
+          ...input,
+          userId,
+          status: "ORDERED",
+        },
+      });
+
+      // Create the checkout
+      const checkout = await ctx.db.checkout
+        .create({
+          data: {
+            userId,
+            totalPrice: input.totalPrice,
+            status: "PENDING",
+          },
+        })
+        .then(async (data) => {
+          // Update the order with the checkout ID
+          await ctx.db.order.update({
+            where: {
+              id: order.id,
+            },
+            data: {
+              checkoutId: data.id,
+            },
+          });
+          await ctx.db.orderStatusHistory.create({
+            data: {
+              checkoutId: data.id,
+              userId: userId,
+              previousStatus: "PENDING",
+              newStatus: "PENDING",
+              changedAt: new Date(),
+            },
+          });
+        });
+
+      // Create an order status history
+
+      return checkout; // Return the checkout after creation
     }),
 });

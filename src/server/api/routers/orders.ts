@@ -175,12 +175,67 @@ export const ordersRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.auth.userId;
+
+      const checkout = await ctx.db.checkout.findUnique({
+        where: { id: input.id },
+        select: { status: true, userId: true },
+      });
+
+      if (!checkout) {
+        throw new Error("Checkout not found");
+      }
+
+      await ctx.db.orderStatusHistory.create({
+        data: {
+          checkoutId: input.id,
+          userId: checkout.userId,
+          previousStatus: checkout.status,
+          newStatus: input.status,
+          changedAt: new Date(),
+        },
+      });
+
+      // Update the checkout status
       return await ctx.db.checkout.update({
         where: {
           id: input.id,
         },
         data: {
           status: input.status,
+        },
+      });
+    }),
+
+  getStatusOfOrder: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        orderId: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.auth.userId;
+      return ctx.db.orderStatusHistory.findMany({
+        where: {
+          userId: input.userId,
+          checkoutId: input.orderId,
+        },
+        include: {
+          user: true,
+          checkout: {
+            select: {
+              order: {
+                select: {
+                  product: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       });
     }),
