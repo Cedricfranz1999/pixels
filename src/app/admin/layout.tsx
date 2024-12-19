@@ -11,12 +11,6 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { data: user } = api.user.getUserLogin.useQuery();
 
-  if (!user) {
-    router.push("/sign-in");
-  } else if (user.userType !== "ADMIN") {
-    router.push("/client");
-  }
-
   return (
     <div className="relative grid min-h-screen min-w-full bg-muted/40 lg:grid-cols-[280px_1fr]">
       <Sidebar />
