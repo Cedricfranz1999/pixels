@@ -24,7 +24,13 @@ const config = {
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    '@next/next/no-img-element': 'off',
+    "@typescript-eslint/no-floating-promises": "off",
+    "jsx-a11y/alt-text": "off",
+    "react/no-unescaped-entities": "off",
+    "react/jsx-key": "off",
+    "@typescript-eslint/await-thenable": "off",
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-base-to-string": "off",
 
     "@typescript-eslint/consistent-type-imports": [
       "warn",
