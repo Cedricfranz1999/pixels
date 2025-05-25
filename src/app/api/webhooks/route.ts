@@ -51,7 +51,8 @@ export async function POST(req: Request) {
   }
 
   // Do something with the payload
-  // For this guide, you simply log the payload to the console
+  // For this guide, you simply log the payload to the
+  // e
   const { id } = evt.data;
   const eventType = evt.type;
 
@@ -61,7 +62,6 @@ export async function POST(req: Request) {
       clerkUserId: id!,
       firstname: payload.data.first_name as string,
       lastname: payload.data.last_name as string,
-      contactNumber: contact.data.phone_numbers[0].phone_number as string,
       email: payload.data.email_addresses[0]?.email_address as string,
       profileImage: payload.data.profile_image_url as string,
     },
